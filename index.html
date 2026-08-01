@@ -130,6 +130,12 @@ ul{list-style:none}
 .btn-warm:hover{box-shadow:0 4px 24px rgba(217,119,6,.25);transform:translateY(-2px)}
 .btn svg{width:18px;height:18px;flex-shrink:0}
 
+.cookie-banner{display:none;position:fixed;left:1rem;right:1rem;bottom:6rem;z-index:150;max-width:640px;margin:0 auto;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);box-shadow:0 8px 30px rgba(0,0,0,.15);padding:1rem 1.25rem;align-items:center;gap:1rem;flex-wrap:wrap}
+.cookie-banner p{font-size:.8125rem;color:var(--fg-2);flex:1;min-width:200px;margin:0;line-height:1.5}
+.cookie-banner a{color:var(--accent-2);text-decoration:underline}
+.cookie-banner .btn{flex-shrink:0;padding:.6rem 1.25rem;font-size:.8125rem}
+@media(max-width:480px){.cookie-banner{flex-direction:column;align-items:stretch;bottom:5.5rem}.cookie-banner .btn{width:100%;justify-content:center}}
+
 /* KEYFRAMES */
 @keyframes float{0%,100%{transform:translateY(0) rotate(var(--r1,-2deg))}50%{transform:translateY(var(--dy,-14px)) rotate(var(--r2,2deg))}}
 @keyframes blob1{0%{transform:translate(0,0) scale(1)}100%{transform:translate(80px,40px) scale(1.12)}}
@@ -457,6 +463,7 @@ footer{background:var(--bg-2);border-top:1px solid var(--border);padding-top:3.5
       <li><a href="#resultados" class="nav-link">Resultados</a></li>
       <li><a href="#testimonios" class="nav-link">Testimonios</a></li>
       <li><a href="#preguntas" class="nav-link">Preguntas</a></li>
+      <li><a href="/blog/" class="nav-link">Blog</a></li>
       <li><a href="#contacto" class="nav-link">Contacto</a></li>
     </ul>
     <a href="https://wa.me/17862016327?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios%20migratorios" target="_blank" rel="noopener" class="btn btn-wa nav-cta" style="padding:.55rem 1.25rem;font-size:.8125rem">
@@ -471,6 +478,7 @@ footer{background:var(--bg-2);border-top:1px solid var(--border);padding-top:3.5
     <a href="#resultados" class="nav-link">Resultados</a>
     <a href="#testimonios" class="nav-link">Testimonios</a>
     <a href="#preguntas" class="nav-link">Preguntas</a>
+    <a href="/blog/" class="nav-link">Blog</a>
     <a href="#contacto" class="nav-link">Contacto</a>
     <a href="https://wa.me/17862016327?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios%20migratorios" target="_blank" rel="noopener" class="btn btn-wa">Contáctanos por WhatsApp</a>
     <a href="https://calendly.com/isarodriguez19960206/30min" target="_blank" rel="noopener" class="btn-cal" style="font-size:.85rem;padding:.7rem 1.25rem">
@@ -859,7 +867,7 @@ footer{background:var(--bg-2);border-top:1px solid var(--border);padding-top:3.5
         <p>Servicios migratorios confiables para la comunidad latina. Te acompañamos en cada paso con respaldo profesional y atención en español.</p>
       </div>
       <div class="footer-col"><h4>Servicios</h4><a href="#servicios">Asilo</a><a href="#servicios">Permiso de Trabajo</a><a href="#servicios">Petición Familiar</a><a href="#servicios">Seguro Social</a><a href="#servicios">Ajuste de Estatus</a><a href="#servicios">Cambio de Corte</a></div>
-      <div class="footer-col"><h4>Empresa</h4><a href="#mision">Sobre Nosotros</a><a href="#proceso">Nuestro Proceso</a><a href="#resultados">Resultados</a><a href="#testimonios">Testimonios</a><a href="#preguntas">Preguntas Frecuentes</a></div>
+      <div class="footer-col"><h4>Empresa</h4><a href="#mision">Sobre Nosotros</a><a href="#proceso">Nuestro Proceso</a><a href="#resultados">Resultados</a><a href="#testimonios">Testimonios</a><a href="#preguntas">Preguntas Frecuentes</a><a href="/blog/">Blog</a></div>
       <div class="footer-col"><h4>Contacto</h4><a href="#contacto">Consulta Gratis</a><a href="https://wa.me/17862016327?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios%20migratorios" target="_blank" rel="noopener">WhatsApp</a><a href="#">Facebook</a><a href="#">Instagram</a><a href="#">TikTok</a></div>
     </div>
     <div class="legal-banner">
@@ -870,6 +878,25 @@ footer{background:var(--bg-2);border-top:1px solid var(--border);padding-top:3.5
     </div>
   </div>
 </footer>
+
+<!-- Cookie Banner -->
+<div class="cookie-banner" id="cookie-banner">
+  <p>Usamos cookies de Google Analytics y Microsoft Clarity para entender cómo usas el sitio y mejorarlo. No vendemos tu información. <a href="#privacidad">Más información</a>.</p>
+  <button class="btn btn-primary" id="cookie-accept">Aceptar</button>
+</div>
+<script>
+(function(){
+  var KEY='rs_cookie_consent';
+  var banner=document.getElementById('cookie-banner');
+  if(!banner) return;
+  if(localStorage.getItem(KEY)!=='accepted'){banner.style.display='flex';}
+  var btn=document.getElementById('cookie-accept');
+  if(btn) btn.addEventListener('click',function(){
+    localStorage.setItem(KEY,'accepted');
+    banner.style.display='none';
+  });
+})();
+</script>
 
 <!-- SERVICE MODAL -->
 <div class="modal-overlay" id="svc-modal">
