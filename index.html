@@ -9,6 +9,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light">
 <link rel="canonical" href="https://rodriguezsuarezllc.com/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Rodriguez Suarez LLC">
@@ -99,12 +102,14 @@
   --blob-o:.12;--nav-blur:rgba(255,255,255,.85);
   --stat-bg:linear-gradient(135deg,#F0FDF4 0%,#FEF9EE 100%);
   --input-bg:rgba(6,78,59,.03);--input-border:rgba(6,78,59,.12);
-  --font:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --font:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --font-heading:'Schibsted Grotesk',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{font-family:var(--font);color:var(--fg);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,.section-title{font-family:var(--font-heading)}
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
 button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
@@ -180,7 +185,7 @@ ul{list-style:none}
 .hero-content{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem);align-items:center}
 .hero-text{animation:fade-in-up .8s var(--ease) both}
 .hero-text h1{font-size:clamp(2.25rem,5vw,3.75rem);font-weight:800;letter-spacing:-.04em;line-height:1.08;margin-bottom:1.25rem;text-wrap:balance}
-.hero-text h1 em{font-style:normal;background:var(--hero-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-text h1 em{font-style:normal;color:var(--accent)}
 .hero-text .hero-sub{font-size:clamp(.925rem,1.3vw,1.1rem);color:var(--fg-2);max-width:520px;margin-bottom:2rem;line-height:1.7}
 .hero-buttons{display:flex;gap:1rem;flex-wrap:wrap}
 
@@ -234,17 +239,13 @@ ul{list-style:none}
 .services-header{text-align:center;margin-bottom:clamp(2.5rem,5vw,4rem)}
 .services-header .section-sub{margin:0 auto}
 .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
-.svc-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;transition:all var(--t) var(--ease);position:relative;overflow:hidden}
-.svc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent-2),var(--warm));opacity:0;transition:opacity var(--t)}
-.svc-card:hover{border-color:var(--border-h);box-shadow:0 8px 32px rgba(6,78,59,.08);transform:translateY(-4px)}
-.svc-card:hover::before{opacity:1}
-.svc-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.15);border-radius:10px;margin-bottom:1rem;color:var(--accent);transition:all var(--t)}
-.svc-card:hover .svc-icon{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.25)}
-.svc-icon svg{width:20px;height:20px}
+.svc-card{background:var(--bg);border:1px solid var(--border);border-left:3px solid var(--accent-2);border-radius:0 var(--r) var(--r) 0;padding:1.5rem;transition:background var(--t) var(--ease);position:relative}
+.svc-card:hover{background:var(--card)}
+.svc-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;color:var(--accent)}
+.svc-icon svg{width:26px;height:26px}
 .svc-card h3{font-size:.9375rem;font-weight:650;margin-bottom:.5rem}
 .svc-card p{font-size:.8125rem;color:var(--fg-2);line-height:1.55;margin-bottom:1rem}
-.svc-link{font-size:.78rem;font-weight:600;color:var(--accent-2);display:inline-flex;align-items:center;gap:.25rem;transition:gap .25s;cursor:pointer}
-.svc-card:hover .svc-link{gap:.5rem}
+.svc-link{font-size:.78rem;font-weight:600;color:var(--accent-2);display:inline-flex;align-items:center;gap:.35rem;cursor:pointer}
 .modal-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
 .modal-overlay.active{opacity:1;visibility:visible}
 .modal-box{background:var(--bg);border-radius:var(--r-lg);max-width:560px;width:100%;max-height:85vh;overflow-y:auto;padding:2.5rem;position:relative;transform:translateY(24px) scale(.97);transition:transform .35s var(--ease);box-shadow:0 24px 64px rgba(0,0,0,.2)}
@@ -366,7 +367,7 @@ ul{list-style:none}
 .cta-section::before{content:'';position:absolute;top:-50%;right:-20%;width:600px;height:600px;border-radius:50%;background:var(--accent-2);filter:blur(180px);opacity:calc(var(--blob-o) * .6)}
 .cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem);align-items:start;position:relative;z-index:1}
 .cta-text h2{font-size:clamp(1.75rem,4vw,2.75rem);font-weight:700;letter-spacing:-.03em;line-height:1.15;margin-bottom:1rem;text-wrap:balance}
-.cta-text h2 em{font-style:normal;background:linear-gradient(135deg,var(--accent-2),var(--warm));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-text h2 em{font-style:normal;color:var(--accent-2)}
 .cta-text>p{color:var(--fg-2);margin-bottom:1.5rem;line-height:1.65}
 .cta-features{display:flex;flex-direction:column;gap:.75rem;margin-bottom:2rem}
 .cta-feat{display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:var(--fg-2)}
