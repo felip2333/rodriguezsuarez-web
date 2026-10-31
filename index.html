@@ -79,6 +79,11 @@
   gtag('js', new Date());
 
   gtag('config', 'G-P1N46P4VDH');
+
+  // Google Ads: cuando crees la cuenta, pega aquí el ID (AW-...) y la etiqueta de cada conversión.
+  // Mientras estén vacíos no se envía nada a Ads (las conversiones también se pueden importar desde GA4).
+  window.RS_ADS = { id: '', whatsapp: '', agendar: '', formulario: '' };
+  if (RS_ADS.id) gtag('config', RS_ADS.id);
 </script>
 
 <!-- Microsoft Clarity -->
@@ -1097,7 +1102,7 @@ footer{border-top:1px solid var(--line);padding:clamp(3rem,6vw,4.5rem) 0 2rem;ba
         </div>
         <div class="f-group"><label class="f-label" for="message">Cuéntanos tu situación <span class="opt">(opcional)</span></label><textarea id="message" class="f-input" rows="4" placeholder="Describe brevemente tu caso..."></textarea></div>
         <button type="submit" class="btn btn-wa"><svg><use href="#i-wa"/></svg>Enviar por WhatsApp</button>
-        <p class="f-note">Al enviar aceptas nuestra <a href="#privacidad" style="text-decoration:underline">Política de Privacidad</a>. Rodriguez Suarez LLC no es un despacho de abogados y enviar este formulario no crea una relación abogado-cliente.</p>
+        <p class="f-note">Al enviar aceptas nuestra <a href="privacidad.html#privacidad" style="text-decoration:underline">Política de Privacidad</a>. Rodriguez Suarez LLC no es un despacho de abogados y enviar este formulario no crea una relación abogado-cliente.</p>
       </form>
       <div class="f-success" id="form-success" role="status">
         <div class="big"><svg><use href="#i-check"/></svg></div>
@@ -1131,7 +1136,7 @@ footer{border-top:1px solid var(--line);padding:clamp(3rem,6vw,4.5rem) 0 2rem;ba
     </div>
     <div class="foot-bottom">
       <p>© 2026 Rodriguez Suarez LLC. Todos los derechos reservados.</p>
-      <p><a href="#privacidad">Privacidad</a>&ensp;·&ensp;<a href="#terminos">Términos</a></p>
+      <p><a href="privacidad.html#privacidad">Privacidad</a>&ensp;·&ensp;<a href="privacidad.html#terminos">Términos</a></p>
     </div>
   </div>
 </footer>
@@ -1155,7 +1160,7 @@ footer{border-top:1px solid var(--line);padding:clamp(3rem,6vw,4.5rem) 0 2rem;ba
 
 <!-- Cookies -->
 <div class="cookie" id="cookie-banner">
-  <p>Usamos cookies de Google Analytics y Microsoft Clarity para entender cómo usas el sitio y mejorarlo. No vendemos tu información. <a href="#privacidad">Más información</a>.</p>
+  <p>Usamos cookies de Google Analytics, Google Ads y Microsoft Clarity para entender cómo usas el sitio y medir nuestros anuncios. No vendemos tu información. <a href="privacidad.html#privacidad">Más información</a>.</p>
   <button class="btn" id="cookie-accept">Aceptar</button>
 </div>
 
@@ -1261,11 +1266,28 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   const waLink=t=>WA+encodeURIComponent(t);
 
-  // Medición: qué botones de WhatsApp y de cita generan contactos (GA4)
+  // Origen: si la persona llegó por un anuncio de Google (gclid o utm_source=google) se recuerda 90 días,
+  // y su mensaje de WhatsApp termina con "(Los encontré en Google)" para que el equipo marque el lead como Google.
+  try{
+    const q=new URLSearchParams(location.search);
+    if(q.get('gclid')||q.get('gbraid')||q.get('wbraid')||(q.get('utm_source')||'').toLowerCase()==='google')
+      localStorage.setItem('rs_src',JSON.stringify({s:'google',c:q.get('utm_campaign')||'',t:Date.now()}));
+  }catch(e){}
+  const fromGoogle=()=>{try{const v=JSON.parse(localStorage.getItem('rs_src')||'null');return !!v&&Date.now()-v.t<90*864e5;}catch(e){return false;}};
+  const adsConversion=kind=>{const A=window.RS_ADS||{};if(window.gtag&&A.id&&A[kind])gtag('event','conversion',{send_to:A.id+'/'+A[kind]});};
+  window.adsConversion=adsConversion;
+
+  // Medición: qué botones de WhatsApp y de cita generan contactos (GA4 + Google Ads)
   document.addEventListener('click',e=>{
-    const a=e.target.closest('a[href*="wa.me"],a[href*="calendly.com"]');if(!a||!window.gtag)return;
+    const a=e.target.closest('a[href*="wa.me"],a[href*="calendly.com"]');if(!a)return;
+    const wa=a.href.includes('wa.me');
+    if(wa&&fromGoogle()){
+      try{const u=new URL(a.href);const t=u.searchParams.get('text')||'Hola, quiero información.';if(!t.includes('encontré en Google')){u.searchParams.set('text',t+'\n\n(Los encontré en Google)');a.href=u.toString();}}catch(err){}
+    }
+    if(!window.gtag)return;
     const where=a.dataset.cta||(a.closest('[id]')||{}).id||'otro';
-    gtag('event',a.href.includes('wa.me')?'click_whatsapp':'click_agendar',{ubicacion:where});
+    gtag('event',wa?'click_whatsapp':'click_agendar',{ubicacion:where});
+    adsConversion(wa?'whatsapp':'agendar');
   });
 
   // Cinta: cada código explica qué es al pasar el mouse o tocarlo
@@ -1432,6 +1454,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const url=WA+encodeURIComponent(lines.join('\n'));
     document.getElementById('form-wa-again').href=url;
     if(window.gtag)gtag('event','generate_lead',{method:'formulario',tramite:val('matter')});
+    if(window.adsConversion)adsConversion('formulario');
     window.open(url,'_blank','noopener');
     form.style.display='none';success.classList.add('show');
   });
