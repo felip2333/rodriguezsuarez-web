@@ -34,17 +34,22 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sofia{--s-bg:#111916;--s-bg2:#18231E;--s-ink:#EEF5F1;--s-ink2:#A9BBB2;--s-line:rgba(190,255,225,.14);--s-brand:#34D399;--s-brand-ink:#05261A;--s-me:#1F6B52;--s-me-ink:#F2FBF7;--s-shadow:0 24px 60px -18px rgba(0,0,0,.7)}}\
 :root[data-theme="dark"] .sofia{--s-bg:#111916;--s-bg2:#18231E;--s-ink:#EEF5F1;--s-ink2:#A9BBB2;--s-line:rgba(190,255,225,.14);--s-brand:#34D399;--s-brand-ink:#05261A;--s-me:#1F6B52;--s-me-ink:#F2FBF7;--s-shadow:0 24px 60px -18px rgba(0,0,0,.7)}\
 .sofia *{box-sizing:border-box}\
-.sofia-launch{position:fixed;right:1.25rem;bottom:var(--sofia-bottom,6rem);z-index:75;display:flex;align-items:center;gap:.6rem;border:0;cursor:pointer;background:none;padding:0;font:inherit}\
-.sofia-av{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:var(--s-brand);color:var(--s-brand-ink);font-weight:700;font-size:1.25rem;letter-spacing:-.02em;box-shadow:0 12px 28px -10px rgba(6,78,59,.6);position:relative;flex-shrink:0;transition:transform .2s}\
-.sofia-launch:hover .sofia-av{transform:scale(1.06)}\
-.sofia-av i{position:absolute;right:2px;bottom:2px;width:13px;height:13px;border-radius:50%;background:var(--s-live);border:2px solid var(--s-bg)}\
-.sofia-teaser{order:-1;max-width:230px;background:var(--s-bg);color:var(--s-ink);border:1px solid var(--s-line);border-radius:14px 14px 4px 14px;padding:.6rem .8rem;font-size:.84rem;line-height:1.4;text-align:left;box-shadow:var(--s-shadow);opacity:0;transform:translateY(6px);transition:opacity .3s,transform .3s;pointer-events:none}\
-.sofia-teaser.on{opacity:1;transform:none;pointer-events:auto}\
-.sofia-teaser b{display:block;font-size:.78rem;margin-bottom:.1rem}\
+.sofia-launch{position:fixed;right:var(--sofia-right,1.25rem);bottom:var(--sofia-bottom,6rem);z-index:75;display:flex;align-items:center;gap:.65rem;border:0;cursor:pointer;background:none;padding:0;font:inherit;color:var(--s-ink)}\
+.sofia-orb{width:var(--sofia-size,56px);height:var(--sofia-size,56px);border-radius:50%;display:grid;place-items:center;background:var(--s-brand);color:var(--s-brand-ink);box-shadow:0 12px 28px -10px rgba(6,78,59,.6);position:relative;flex-shrink:0;transition:transform .2s}\
+.sofia-orb svg{width:27px;height:27px}\
+.sofia-launch:hover .sofia-orb{transform:scale(1.06)}\
+.sofia-orb i,.sofia-av i{position:absolute;right:1px;bottom:1px;width:14px;height:14px;border-radius:50%;background:var(--s-live);border:2.5px solid var(--s-bg)}\
+.sofia-orb::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 0 rgba(16,185,129,.45);animation:sofiaPing 2.6s ease-out 1.5s 3}\
+.sofia-label{order:-1;display:flex;flex-direction:column;align-items:flex-start;max-width:230px;background:var(--s-bg);border:1px solid var(--s-line);border-radius:14px 14px 4px 14px;padding:.5rem .8rem;text-align:left;line-height:1.3;box-shadow:var(--s-shadow);transition:transform .2s}\
+.sofia-launch:hover .sofia-label{transform:translateX(-2px)}\
+.sofia-label b{font-size:.9rem;font-weight:700;letter-spacing:-.01em}\
+.sofia-label small{font-size:.74rem;color:var(--s-ink2)}\
+.sofia-av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--s-brand);color:var(--s-brand-ink);position:relative;flex-shrink:0}\
+.sofia-av svg{width:21px;height:21px}\
+@keyframes sofiaPing{0%{box-shadow:0 0 0 0 rgba(16,185,129,.45)}80%,100%{box-shadow:0 0 0 14px rgba(16,185,129,0)}}\
 .sofia-panel{position:fixed;right:1.25rem;bottom:1.25rem;z-index:120;width:380px;height:min(640px,calc(100vh - 2.5rem));display:flex;flex-direction:column;background:var(--s-bg);border:1px solid var(--s-line);border-radius:20px;box-shadow:var(--s-shadow);overflow:hidden;opacity:0;transform:translateY(16px) scale(.98);transform-origin:bottom right;visibility:hidden;transition:opacity .22s,transform .22s,visibility .22s}\
 .sofia-panel.open{opacity:1;transform:none;visibility:visible}\
 .sofia-head{display:flex;align-items:center;gap:.7rem;padding:.85rem .9rem .85rem 1rem;border-bottom:1px solid var(--s-line)}\
-.sofia-head .sofia-av{width:40px;height:40px;font-size:1rem;box-shadow:none}\
 .sofia-who{flex:1;min-width:0}\
 .sofia-who b{display:block;font-size:.95rem;line-height:1.2}\
 .sofia-who small{display:block;font-size:.74rem;color:var(--s-ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}\
@@ -77,10 +82,11 @@
 .sofia :focus-visible{outline:2px solid var(--s-live);outline-offset:2px}\
 @keyframes sofiaIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}\
 @keyframes sofiaDot{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-2px)}}\
-@media (max-width:560px){.sofia-panel{right:0;bottom:0;left:0;top:0;width:auto;height:auto;border-radius:0;border:0}.sofia-teaser{max-width:190px}}\
+@media (max-width:560px){.sofia-panel{right:0;bottom:0;left:0;top:0;width:auto;height:auto;border-radius:0;border:0}.sofia-label{max-width:185px}}\
 @media (prefers-reduced-motion:reduce){.sofia *{animation:none!important;transition:none!important}}';
 
   var ICON = {
+    bot: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12.5c0 3.87-3.58 7-8 7-1.15 0-2.25-.21-3.24-.6L4 20l1.2-3.6A6.6 6.6 0 014 12.5c0-3.87 3.58-7 8-7"/><path d="M18 2.5l.8 2.2 2.2.8-2.2.8L18 8.5l-.8-2.2-2.2-.8 2.2-.8z" fill="currentColor" stroke-width="1.2"/><circle cx="8.5" cy="12.5" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="12.5" r=".9" fill="currentColor" stroke="none"/><circle cx="15.5" cy="12.5" r=".9" fill="currentColor" stroke="none"/></svg>',
     close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
     send: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>',
     wa: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.89.53 3.66 1.44 5.17L2 22l4.83-1.44A9.96 9.96 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18a8 8 0 01-4.24-1.21l-.25-.15-2.87.85.85-2.87-.17-.28A8 8 0 1112 20zm4.47-5.62c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.08-.3-.15-1.26-.47-2.39-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2-1.41.25-.7.25-1.29.18-1.41-.08-.13-.27-.2-.57-.35z"/></svg>'
@@ -91,12 +97,12 @@
   root.innerHTML =
     '<style>' + css + '</style>' +
     '<button class="sofia-launch" type="button" aria-label="Abrir chat con Sofía, asistente virtual">' +
-      '<span class="sofia-av" aria-hidden="true">S<i></i></span>' +
-      '<span class="sofia-teaser" role="status"></span>' +
+      '<span class="sofia-orb" aria-hidden="true">' + ICON.bot + '<i></i></span>' +
+      '<span class="sofia-label"><b>Habla con Sofía</b><small>Te respondo al instante, 24/7</small></span>' +
     '</button>' +
     '<section class="sofia-panel" role="dialog" aria-modal="false" aria-label="Chat con Sofía" aria-hidden="true">' +
       '<header class="sofia-head">' +
-        '<span class="sofia-av" aria-hidden="true">S<i></i></span>' +
+        '<span class="sofia-av" aria-hidden="true">' + ICON.bot + '<i></i></span>' +
         '<div class="sofia-who"><b>Sofía</b><small class="sofia-status"></small></div>' +
         '<a class="sofia-ib" href="' + WA + '" target="_blank" rel="noopener" aria-label="Seguir por WhatsApp" title="Seguir por WhatsApp">' + ICON.wa + '</a>' +
         '<button class="sofia-ib sofia-x" type="button" aria-label="Cerrar chat">' + ICON.close + '</button>' +
@@ -109,21 +115,30 @@
   document.body.appendChild(root);
 
   var launch = root.querySelector('.sofia-launch');
-  var teaser = root.querySelector('.sofia-teaser');
+  var label = root.querySelector('.sofia-label');
   var panel = root.querySelector('.sofia-panel');
   var log = root.querySelector('.sofia-log');
   var form = root.querySelector('.sofia-form');
   var input = form.querySelector('textarea');
   var sendBtn = form.querySelector('.sofia-send');
 
-  // El botón se ubica encima del botón de WhatsApp o de la barra inferior del celular.
+  // El botón va justo encima del botón de WhatsApp, centrado con él y del mismo tamaño;
+  // en el celular, encima de la barra inferior.
   function place() {
     var bar = document.querySelector('.wa-bar');
     var fl = document.querySelector('.wa-float');
-    var b = 20;
-    if (bar && getComputedStyle(bar).display !== 'none') b = bar.offsetHeight + 14;
-    else if (fl && getComputedStyle(fl).display !== 'none') b = fl.getBoundingClientRect().height + 34;
+    var b = 20, size = 56, right = 20;
+    if (bar && getComputedStyle(bar).display !== 'none') {
+      b = bar.offsetHeight + 14;
+    } else if (fl && getComputedStyle(fl).display !== 'none') {
+      var r = fl.getBoundingClientRect();
+      size = Math.round(r.width) || size;
+      b = window.innerHeight - r.top + 14;
+      right = document.documentElement.clientWidth - r.right;
+    }
     root.style.setProperty('--sofia-bottom', b + 'px');
+    root.style.setProperty('--sofia-right', right + 'px');
+    root.style.setProperty('--sofia-size', size + 'px');
   }
   place();
   window.addEventListener('resize', place);
@@ -218,7 +233,6 @@
 
   var lastFocus = null;
   function open() {
-    teaser.classList.remove('on');
     if (!log.childElementCount) render();
     status();
     lastFocus = document.activeElement;
@@ -244,14 +258,6 @@
   input.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit')); } });
   input.addEventListener('input', function () { input.style.height = ''; input.style.height = Math.min(input.scrollHeight, 120) + 'px'; });
 
-  // Mensaje de bienvenida junto al botón, una vez por visita.
-  if (!state.seen) {
-    setTimeout(function () {
-      if (panel.classList.contains('open')) return;
-      teaser.innerHTML = teamOpen()
-        ? '<b>Sofía · asistente virtual</b>¿Tienes dudas sobre tu trámite? Pregúntame.'
-        : '<b>Sofía · asistente virtual</b>El equipo vuelve pronto, pero yo te atiendo ahora. ¿Te ayudo?';
-      teaser.classList.add('on');
-    }, 7000);
-  }
+  // Si ya hablaron, la etiqueta invita a seguir la conversación.
+  if (state.msgs.length) label.innerHTML = '<b>Sigue con Sofía</b><small>Tu conversación sigue aquí</small>';
 })();
