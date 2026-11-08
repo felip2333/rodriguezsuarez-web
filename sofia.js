@@ -278,6 +278,7 @@
      en esa visita. En los artículos, el mensaje habla del tema que están leyendo. */
   var NUDGE_MS = 8000;
   var TOPICS = {
+    '/blog/asilo-en-estados-unidos-2026.html': { t: '¿Estás pensando en pedir asilo?', s: 'Te explico el proceso y los documentos', q: 'Quiero pedir asilo. ¿Cómo es el proceso?' },
     '/blog/permiso-de-trabajo-asilo-2026.html': { t: '¿Tu permiso vence pronto?', s: 'Pregúntame si ya puedes renovarlo', q: 'Quiero renovar mi permiso de trabajo. ¿Ya puedo hacerlo?' },
     '/blog/peticion-familiar-ajuste-de-estatus.html': { t: '¿Quieres pedir a tu familiar?', s: 'Te explico el proceso y los documentos', q: 'Quiero pedir a un familiar. ¿Cómo es el proceso?' },
     '/blog/cambio-de-direccion-uscis-corte-de-inmigracion.html': { t: '¿Te mudaste hace poco?', s: 'Te ayudo a avisar a USCIS y a la corte', q: 'Me mudé y necesito cambiar mi dirección' },
