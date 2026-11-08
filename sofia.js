@@ -285,7 +285,7 @@
   };
   var topic = TOPICS[location.pathname];
   var nudgeTimer = null, pulsed = false, nudgeShown = false;
-  function nudgeOff() { return !!state.nudgeOff || panel.classList.contains('open'); }
+  function nudgeOff() { return !!state.nudgeOff || panel.classList.contains('open') || !!window.__promoOpen; }
   function showNudge(title, sub, ask) {
     if (nudgeOff() || nudgeShown) return;
     nudgeShown = true;
