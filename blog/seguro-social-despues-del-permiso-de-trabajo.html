@@ -121,6 +121,18 @@ footer{background:var(--bg-2);border-top:1px solid var(--border);padding:2.5rem 
 .wa-float{position:fixed;bottom:1.5rem;right:1.5rem;z-index:90;width:56px;height:56px;border-radius:50%;background:var(--wa);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(37,211,102,.3);transition:all .3s var(--ease)}
 .wa-float:hover{transform:scale(1.1)}
 .wa-float svg{width:28px;height:28px;fill:#fff}
+
+/* Recuadro a mitad del artículo: preguntarle a Sofía o escribir por WhatsApp */
+.ask-box{display:flex;align-items:center;justify-content:space-between;gap:1rem 1.5rem;flex-wrap:wrap;margin:2rem 0;padding:1.1rem 1.25rem;border:1px solid var(--border);border-left:4px solid var(--accent-2);border-radius:var(--r);background:var(--bg-2)}
+.ask-box b{display:block;color:var(--fg);font-size:1rem;margin-bottom:.15rem}
+.ask-box span{display:block;color:var(--fg-2);font-size:.9rem;line-height:1.45}
+.ask-box .ask-txt{flex:1 1 260px}
+.ask-actions{display:flex;gap:.5rem;flex-wrap:wrap}
+.ask-actions .btn{padding:.6rem 1rem;font-size:.875rem}
+.ask-sofia{background:var(--accent);color:#fff;border:0;cursor:pointer;font-family:inherit}
+.ask-sofia:hover{background:#0a6b51;transform:translateY(-2px)}
+.ask-actions svg{width:18px;height:18px;flex-shrink:0}
+@media(max-width:560px){.ask-actions{width:100%}.ask-actions .btn{flex:1;justify-content:center}}
 </style>
 
 <nav class="nav">
@@ -167,6 +179,14 @@ footer{background:var(--bg-2);border-top:1px solid var(--border);padding:2.5rem 
   <h2>¿Puedo pedir el Seguro Social al mismo tiempo que el permiso de trabajo?</h2>
   <p>Sí, y esta es la forma más rápida. Desde 2017, USCIS permite solicitar tu número de Seguro Social <strong>en el mismo formulario I-765</strong> con el que pides tu permiso de trabajo (EAD). Si marcaste esa opción al aplicar, no necesitas ir a ninguna oficina: cuando tu EAD es aprobado, la Administración del Seguro Social (SSA) emite tu tarjeta automáticamente y te la envía por correo.</p>
   <p>Si no pediste el SSN junto con tu EAD, o tu formulario no incluía esa opción, entonces sí debes tramitarlo en persona en una oficina de la SSA siguiendo los pasos de abajo.</p>
+
+  <aside class="ask-box" aria-label="¿Ya tienes tu permiso y te falta el Seguro Social?">
+    <div class="ask-txt"><b>¿Ya tienes tu permiso y te falta el Seguro Social?</b><span>Sofía te explica qué llevar y cómo pedirlo. También puedes escribirnos por WhatsApp.</span></div>
+    <div class="ask-actions">
+      <button type="button" class="btn ask-sofia" data-ask="Ya tengo permiso de trabajo y quiero sacar mi Seguro Social" onclick="if(window.openSofia){openSofia(this.dataset.ask,'articulo')}else{location.href=this.nextElementSibling.href}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.5c0 3.87-3.58 7-8 7-1.15 0-2.25-.21-3.24-.6L4 20l1.2-3.6A6.6 6.6 0 014 12.5c0-3.87 3.58-7 8-7s8 3.13 8 7z"/></svg>Pregúntale a Sofía</button>
+      <a class="btn btn-wa" href="https://wa.me/17862016327?text=Hola%2C%20le%C3%AD%20la%20gu%C3%ADa%20del%20Seguro%20Social%20y%20tengo%20una%20pregunta." target="_blank" rel="noopener" data-cta="blog-medio"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.89.53 3.66 1.44 5.17L2 22l4.83-1.44A9.96 9.96 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18a8 8 0 01-4.24-1.21l-.25-.15-2.87.85.85-2.87-.17-.28A8 8 0 1112 20z"/></svg>WhatsApp</a>
+    </div>
+  </aside>
 
   <h2>Paso a paso si tienes que solicitarlo en persona</h2>
   <ol>

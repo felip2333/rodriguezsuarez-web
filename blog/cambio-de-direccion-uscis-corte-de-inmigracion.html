@@ -176,6 +176,18 @@ article h3{font-size:1.05rem;font-weight:700;margin:1.5rem 0 .4rem;color:var(--f
 .table-wrap tbody th{color:var(--fg);font-weight:600;white-space:nowrap}
 .table-wrap tr:last-child th,.table-wrap tr:last-child td{border-bottom:0}
 .related{font-size:.9375rem}
+
+/* Recuadro a mitad del artículo: preguntarle a Sofía o escribir por WhatsApp */
+.ask-box{display:flex;align-items:center;justify-content:space-between;gap:1rem 1.5rem;flex-wrap:wrap;margin:2rem 0;padding:1.1rem 1.25rem;border:1px solid var(--border);border-left:4px solid var(--accent-2);border-radius:var(--r);background:var(--bg-2)}
+.ask-box b{display:block;color:var(--fg);font-size:1rem;margin-bottom:.15rem}
+.ask-box span{display:block;color:var(--fg-2);font-size:.9rem;line-height:1.45}
+.ask-box .ask-txt{flex:1 1 260px}
+.ask-actions{display:flex;gap:.5rem;flex-wrap:wrap}
+.ask-actions .btn{padding:.6rem 1rem;font-size:.875rem}
+.ask-sofia{background:var(--accent);color:#fff;border:0;cursor:pointer;font-family:inherit}
+.ask-sofia:hover{background:#0a6b51;transform:translateY(-2px)}
+.ask-actions svg{width:18px;height:18px;flex-shrink:0}
+@media(max-width:560px){.ask-actions{width:100%}.ask-actions .btn{flex:1;justify-content:center}}
 </style>
 
 <nav class="nav">
@@ -231,6 +243,14 @@ article h3{font-size:1.05rem;font-weight:700;margin:1.5rem 0 .4rem;color:var(--f
     <li><strong>Guarda copia de todo</strong>, con la fecha de envío.</li>
   </ol>
   <p>Si en tu caso hay varios miembros de la familia, cada persona con su propio número A debe tener su dirección actualizada.</p>
+
+  <aside class="ask-box" aria-label="¿Te mudaste y no sabes si ya avisaste?">
+    <div class="ask-txt"><b>¿Te mudaste y no sabes si ya avisaste?</b><span>Sofía te ayuda a ver qué avisos te faltan, a USCIS, a la corte o a los dos. También puedes escribirnos por WhatsApp.</span></div>
+    <div class="ask-actions">
+      <button type="button" class="btn ask-sofia" data-ask="Me mudé y necesito cambiar mi dirección" onclick="if(window.openSofia){openSofia(this.dataset.ask,'articulo')}else{location.href=this.nextElementSibling.href}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12.5c0 3.87-3.58 7-8 7-1.15 0-2.25-.21-3.24-.6L4 20l1.2-3.6A6.6 6.6 0 014 12.5c0-3.87 3.58-7 8-7s8 3.13 8 7z"/></svg>Pregúntale a Sofía</button>
+      <a class="btn btn-wa" href="https://wa.me/17862016327?text=Hola%2C%20me%20mud%C3%A9%20y%20necesito%20ayuda%20para%20cambiar%20mi%20direcci%C3%B3n." target="_blank" rel="noopener" data-cta="blog-medio"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.89.53 3.66 1.44 5.17L2 22l4.83-1.44A9.96 9.96 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18a8 8 0 01-4.24-1.21l-.25-.15-2.87.85.85-2.87-.17-.28A8 8 0 1112 20z"/></svg>WhatsApp</a>
+    </div>
+  </aside>
 
   <h2>USCIS y la corte, lado a lado</h2>
   <div class="table-wrap">

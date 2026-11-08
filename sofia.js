@@ -39,11 +39,16 @@
 .sofia-orb svg{width:27px;height:27px}\
 .sofia-launch:hover .sofia-orb{transform:scale(1.06)}\
 .sofia-orb i,.sofia-av i{position:absolute;right:1px;bottom:1px;width:14px;height:14px;border-radius:50%;background:var(--s-live);border:2.5px solid var(--s-bg)}\
-.sofia-orb::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 0 rgba(16,185,129,.45);animation:sofiaPing 2.6s ease-out 1.5s 3}\
-.sofia-label{order:-1;display:flex;flex-direction:column;align-items:flex-start;max-width:230px;background:var(--s-bg);border:1px solid var(--s-line);border-radius:14px 14px 4px 14px;padding:.5rem .8rem;text-align:left;line-height:1.3;box-shadow:var(--s-shadow);transition:transform .2s}\
-.sofia-launch:hover .sofia-label{transform:translateX(-2px)}\
-.sofia-label b{font-size:.9rem;font-weight:700;letter-spacing:-.01em}\
-.sofia-label small{font-size:.74rem;color:var(--s-ink2)}\
+.sofia-orb::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 0 rgba(16,185,129,.45)}\
+.sofia-orb.ping::after{animation:sofiaPing 1.8s ease-out 2}\
+.sofia-nudge{position:fixed;z-index:75;right:calc(var(--sofia-right,1.25rem) + var(--sofia-size,56px) + 10px);bottom:calc(var(--sofia-bottom,6rem) + var(--sofia-size,56px) / 2);transform:translate(8px,50%);opacity:0;visibility:hidden;pointer-events:none;display:flex;align-items:flex-start;max-width:240px;background:var(--s-bg);border:1px solid var(--s-line);border-radius:14px 14px 4px 14px;box-shadow:var(--s-shadow);transition:opacity .35s,transform .35s,visibility 0s .35s}\
+.sofia-nudge.on{opacity:1;visibility:visible;pointer-events:auto;transform:translate(0,50%);transition:opacity .35s,transform .35s}\
+.sofia-nudge-txt{flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:.1rem;border:0;background:none;font:inherit;color:var(--s-ink);text-align:left;line-height:1.3;padding:.55rem .2rem .55rem .8rem;cursor:pointer}\
+.sofia-nudge-txt b{font-size:.88rem;font-weight:700;letter-spacing:-.01em}\
+.sofia-nudge-txt small{font-size:.74rem;color:var(--s-ink2)}\
+.sofia-nudge-x{flex-shrink:0;width:30px;height:30px;margin:.2rem .2rem 0 0;border:0;background:none;border-radius:50%;color:var(--s-ink2);display:grid;place-items:center;cursor:pointer}\
+.sofia-nudge-x:hover{background:var(--s-bg2)}\
+.sofia-nudge-x svg{width:14px;height:14px}\
 .sofia-av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--s-brand);color:var(--s-brand-ink);position:relative;flex-shrink:0}\
 .sofia-av svg{width:21px;height:21px}\
 @keyframes sofiaPing{0%{box-shadow:0 0 0 0 rgba(16,185,129,.45)}80%,100%{box-shadow:0 0 0 14px rgba(16,185,129,0)}}\
@@ -82,7 +87,7 @@
 .sofia :focus-visible{outline:2px solid var(--s-live);outline-offset:2px}\
 @keyframes sofiaIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}\
 @keyframes sofiaDot{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-2px)}}\
-@media (max-width:560px){.sofia-panel{right:0;bottom:0;left:0;top:0;width:auto;height:auto;border-radius:0;border:0}.sofia-label{max-width:185px}}\
+@media (max-width:560px){.sofia-panel{right:0;bottom:0;left:0;top:0;width:auto;height:auto;border-radius:0;border:0}.sofia-nudge{max-width:200px}}\
 @media (prefers-reduced-motion:reduce){.sofia *{animation:none!important;transition:none!important}}';
 
   var ICON = {
@@ -98,8 +103,11 @@
     '<style>' + css + '</style>' +
     '<button class="sofia-launch" type="button" aria-label="Abrir chat con Sofía, asistente virtual">' +
       '<span class="sofia-orb" aria-hidden="true">' + ICON.bot + '<i></i></span>' +
-      '<span class="sofia-label"><b>Habla con Sofía</b><small>Te respondo al instante, 24/7</small></span>' +
     '</button>' +
+    '<div class="sofia-nudge" role="status">' +
+      '<button class="sofia-nudge-txt" type="button"><b></b><small></small></button>' +
+      '<button class="sofia-nudge-x" type="button" aria-label="Cerrar aviso">' + ICON.close + '</button>' +
+    '</div>' +
     '<section class="sofia-panel" role="dialog" aria-modal="false" aria-label="Chat con Sofía" aria-hidden="true">' +
       '<header class="sofia-head">' +
         '<span class="sofia-av" aria-hidden="true">' + ICON.bot + '<i></i></span>' +
@@ -115,7 +123,8 @@
   document.body.appendChild(root);
 
   var launch = root.querySelector('.sofia-launch');
-  var label = root.querySelector('.sofia-label');
+  var orb = root.querySelector('.sofia-orb');
+  var nudge = root.querySelector('.sofia-nudge');
   var panel = root.querySelector('.sofia-panel');
   var log = root.querySelector('.sofia-log');
   var form = root.querySelector('.sofia-form');
@@ -232,8 +241,11 @@
   }
 
   var lastFocus = null;
-  function open() {
+  function open(ask, from) {
     if (!log.childElementCount) render();
+    hideNudge(true);
+    state.nudgeOff = true;
+    if (typeof ask === 'string' && ask && !input.value) { input.value = ask; input.dispatchEvent(new Event('input')); }
     status();
     lastFocus = document.activeElement;
     panel.classList.add('open');
@@ -242,8 +254,10 @@
     if (window.matchMedia('(max-width:560px)').matches) document.documentElement.style.overflow = 'hidden';
     setTimeout(function () { input.focus(); scroll(); }, 60);
     state.seen = true; save();
-    track('sofia_abrir');
+    track('sofia_abrir', { origen: typeof from === 'string' ? from : 'boton' });
   }
+  // Para los botones dentro de los artículos: abren el chat con la pregunta ya escrita.
+  window.openSofia = function (ask, from) { open(ask, from || 'articulo'); };
   function close() {
     panel.classList.remove('open');
     panel.setAttribute('aria-hidden', 'true');
@@ -251,13 +265,77 @@
     document.documentElement.style.overflow = '';
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
-  launch.addEventListener('click', open);
+  launch.addEventListener('click', function () { open(); });
   root.querySelector('.sofia-x').addEventListener('click', close);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && panel.classList.contains('open')) close(); });
   form.addEventListener('submit', function (e) { e.preventDefault(); var t = input.value; input.value = ''; input.style.height = ''; send(t); });
   input.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit')); } });
   input.addEventListener('input', function () { input.style.height = ''; input.style.height = Math.min(input.scrollHeight, 120) + 'px'; });
 
-  // Si ya hablaron, la etiqueta invita a seguir la conversación.
-  if (state.msgs.length) label.innerHTML = '<b>Sigue con Sofía</b><small>Tu conversación sigue aquí</small>';
+  /* ---------- Aviso junto al botón ----------
+     No se queda fijo: aparece cuando la persona ya leyó un poco, dura unos segundos y se
+     recoge; después el botón late suavemente unas pocas veces. Si lo cierran, no vuelve
+     en esa visita. En los artículos, el mensaje habla del tema que están leyendo. */
+  var NUDGE_MS = 8000;
+  var TOPICS = {
+    '/blog/permiso-de-trabajo-asilo-2026.html': { t: '¿Tu permiso vence pronto?', s: 'Pregúntame si ya puedes renovarlo', q: 'Quiero renovar mi permiso de trabajo. ¿Ya puedo hacerlo?' },
+    '/blog/peticion-familiar-ajuste-de-estatus.html': { t: '¿Quieres pedir a tu familiar?', s: 'Te explico el proceso y los documentos', q: 'Quiero pedir a un familiar. ¿Cómo es el proceso?' },
+    '/blog/cambio-de-direccion-uscis-corte-de-inmigracion.html': { t: '¿Te mudaste hace poco?', s: 'Te ayudo a avisar a USCIS y a la corte', q: 'Me mudé y necesito cambiar mi dirección' },
+    '/blog/seguro-social-despues-del-permiso-de-trabajo.html': { t: '¿Ya tienes tu permiso de trabajo?', s: 'Te explico cómo sacar tu Seguro Social', q: 'Ya tengo permiso de trabajo y quiero sacar mi Seguro Social' }
+  };
+  var topic = TOPICS[location.pathname];
+  var nudgeTimer = null, pulsed = false, nudgeShown = false;
+  function nudgeOff() { return !!state.nudgeOff || panel.classList.contains('open'); }
+  function showNudge(title, sub, ask) {
+    if (nudgeOff() || nudgeShown) return;
+    nudgeShown = true;
+    nudge.querySelector('b').textContent = title;
+    nudge.querySelector('small').textContent = sub;
+    nudge.dataset.ask = ask || '';
+    nudge.classList.add('on');
+    track('sofia_aviso', { tipo: topic ? 'tema' : 'general' });
+    clearTimeout(nudgeTimer);
+    nudgeTimer = setTimeout(function () { hideNudge(); }, NUDGE_MS);
+  }
+  function hideNudge(stop) {
+    clearTimeout(nudgeTimer);
+    nudge.classList.remove('on');
+    if (!stop) pulse();
+  }
+  // Tres latidos suaves, separados unos 20 segundos; luego se queda quieto.
+  function pulse() {
+    if (pulsed) return;
+    pulsed = true;
+    [1500, 21500, 41500].forEach(function (ms) {
+      setTimeout(function () {
+        if (panel.classList.contains('open')) return;
+        orb.classList.remove('ping'); void orb.offsetWidth; orb.classList.add('ping');
+      }, ms);
+    });
+  }
+  nudge.querySelector('.sofia-nudge-txt').addEventListener('click', function () { open(nudge.dataset.ask, topic ? 'aviso_tema' : 'aviso'); });
+  nudge.querySelector('.sofia-nudge-x').addEventListener('click', function () { state.nudgeOff = true; save(); hideNudge(); });
+
+  function readPct() {
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    return h > 0 ? window.scrollY / h : 1;
+  }
+  function maybeNudge(force) {
+    if (nudgeShown || nudgeOff()) return;
+    var pct = readPct();
+    if (topic) {
+      // En un artículo: cuando ya va por la mitad, o tras un buen rato leyendo.
+      if (force === 'late' || pct >= 0.45) showNudge(topic.t, topic.s, topic.q);
+    } else if (force || pct >= 0.3) {
+      if (state.msgs.length) showNudge('Sigue con Sofía', 'Tu conversación sigue aquí', '');
+      else showNudge('Habla con Sofía', 'Te respondo al instante, 24/7', '');
+    }
+  }
+  if (nudgeOff()) {
+    setTimeout(pulse, 6000);
+  } else {
+    window.addEventListener('scroll', function () { maybeNudge(); }, { passive: true });
+    setTimeout(function () { maybeNudge(topic ? null : 'time'); }, 9000);
+    if (topic) setTimeout(function () { maybeNudge('late'); }, 25000);
+  }
 })();
