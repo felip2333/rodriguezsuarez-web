@@ -135,26 +135,29 @@ html.rp-open .sofia-launch,html.rp-open .sofia-nudge{visibility:hidden}\
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && shown) dismiss('esc'); });
   }
 
-  // En el celular la tarjeta va encima de la barra de WhatsApp.
-  function placeMobile() {
-    var bar = document.querySelector('.wa-bar');
-    var b = bar && getComputedStyle(bar).display !== 'none' && bar.offsetHeight ? bar.offsetHeight + 10 : 12;
-    root.style.setProperty('--rp-bottom', b + 'px');
+  // En el celular la tarjeta va encima de lo que haya abajo: el aviso de cookies o la barra de WhatsApp.
+  function visibleBottom(el) {
+    if (!el) return 0;
+    var cs = getComputedStyle(el), r = el.getBoundingClientRect();
+    if (cs.display === 'none' || cs.visibility === 'hidden' || r.height === 0 || r.top >= window.innerHeight) return 0;
+    return window.innerHeight - r.top;
   }
-
-  function cookieOpen() {
-    var c = document.getElementById('cookie-banner') || document.querySelector('.cookie-banner, .cookie');
-    return !!c && c.offsetParent !== null && getComputedStyle(c).display !== 'none' && getComputedStyle(c).visibility !== 'hidden';
+  function cookieEl() { return document.getElementById('cookie-banner') || document.querySelector('.cookie-banner'); }
+  function placeMobile() {
+    var used = Math.max(visibleBottom(cookieEl()), visibleBottom(document.querySelector('.wa-bar')));
+    root.style.setProperty('--rp-bottom', (used ? used + 10 : 12) + 'px');
   }
 
   function show(trigger) {
     if (shown || (!fromLink && (snoozed() || seenThisVisit()))) return;
-    var sofiaOpen = document.querySelector('.sofia-panel.open');
-    if (sofiaOpen || cookieOpen()) { setTimeout(function () { show(trigger); }, 4000); return; }
+    if (document.querySelector('.sofia-panel.open')) { setTimeout(function () { show(trigger); }, 4000); return; }
     shown = true;
     try { sessionStorage.setItem('rs_promo_seen', '1'); } catch (e) {}
     if (!root) build();
     placeMobile();
+    // Si aceptan o cierran las cookies con la promo abierta, la tarjeta baja a su lugar.
+    var ck = cookieEl();
+    if (ck) ck.addEventListener('click', function () { setTimeout(placeMobile, 350); });
     window.__promoOpen = true;
     document.documentElement.classList.add('rp-open');
     setTimeout(function () { root.classList.add('on'); }, 30);
