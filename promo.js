@@ -23,7 +23,9 @@
     try { var t = Number(localStorage.getItem('rs_promo_x') || 0); return t && Date.now() - t < SNOOZE_DAYS * 864e5; } catch (e) { return false; }
   }
   function seenThisVisit() { try { return sessionStorage.getItem('rs_promo_seen') === '1'; } catch (e) { return false; } }
-  if (snoozed() || seenThisVisit()) return;
+  // Si entran por el enlace de la promoción (?promo=...), se muestra enseguida aunque la hayan cerrado antes.
+  var fromLink = /[?&]promo=/.test(location.search);
+  if (!fromLink && (snoozed() || seenThisVisit())) return;
   function track(name, params) { if (window.gtag) window.gtag('event', name, params || {}); }
 
   var css = '\
@@ -111,7 +113,7 @@
   }
 
   function show(trigger) {
-    if (shown || snoozed() || seenThisVisit()) return;
+    if (shown || (!fromLink && (snoozed() || seenThisVisit()))) return;
     var sofiaOpen = document.querySelector('.sofia-panel.open');
     if (sofiaOpen || cookieOpen()) { setTimeout(function () { show(trigger); }, 4000); return; }
     shown = true;
@@ -144,7 +146,7 @@
   window.addEventListener('scroll', function () {
     if (!shown && Date.now() - armed > 6000 && pct() >= SCROLL_AT) show('scroll');
   }, { passive: true });
-  setTimeout(function () { show('tiempo'); }, DELAY_MS);
+  setTimeout(function () { show(fromLink ? 'enlace' : 'tiempo'); }, fromLink ? 1500 : DELAY_MS);
   // En computador, también cuando el mouse va a salir de la página (a cerrar o cambiar de pestaña).
   if (window.matchMedia('(min-width:641px)').matches) {
     document.addEventListener('mouseout', function (e) {
