@@ -2,14 +2,14 @@
 // nuevos de asilo o de petición familiar con ajuste de estatus. En noviembre se presenta como
 // "Black Friday"; en diciembre como "Promo de fin de año"; desde el 1 de enero no aparece.
 // En el celular es una tarjeta pequeña abajo (no tapa la página); en computador, una ventana
-// centrada. Sale una sola vez por visita, a los ~18 s o al bajar un poco, y si la cierran no
+// centrada. Sale una sola vez por visita, a los 4 s o al bajar un poco, y si la cierran no
 // vuelve en 3 días.
 (function () {
   if (window.__promo) return;
   window.__promo = true;
 
   var END = '2026-12-31';
-  var DELAY_MS = 18000, SCROLL_AT = 0.35, SNOOZE_DAYS = 3;
+  var DELAY_MS = 4000, SCROLL_AT = 0.35, SNOOZE_DAYS = 3;
   var WA = 'https://wa.me/17862016327?text=' + encodeURIComponent('Hola, quiero la promoción del permiso de trabajo sin costo.');
   var ASK = 'Quiero saber de la promoción del permiso de trabajo sin costo';
 
