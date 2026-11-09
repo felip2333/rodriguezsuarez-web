@@ -209,7 +209,7 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 8px)}
 /* ============ HERO ============ */
 .hero{position:relative;padding:clamp(1.25rem,3vw,2.5rem) 0 clamp(3.5rem,7vw,6rem)}
 .hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(var(--dot) 1.2px,transparent 1.2px);background-size:22px 22px;-webkit-mask-image:radial-gradient(ellipse 65% 75% at 72% 45%,#000 20%,transparent 72%);mask-image:radial-gradient(ellipse 65% 75% at 72% 45%,#000 20%,transparent 72%);pointer-events:none}
-.hero-grid{position:relative;display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(2.5rem,6vw,5rem);align-items:center}
+.hero-grid{position:relative;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:clamp(2.5rem,6vw,5rem);align-items:center}
 .live-pill{display:inline-flex;align-items:center;gap:.55rem;font-size:.8rem;color:var(--ink-2);border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:.34rem .8rem .34rem .65rem;margin-bottom:1.5rem}
 .pulse{position:relative;width:8px;height:8px;border-radius:50%;background:var(--live);flex-shrink:0}
 .pulse::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1.5px solid var(--live);opacity:0;animation:ring 2.4s var(--ease) infinite}
@@ -1624,6 +1624,20 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
   // El recuadro crece y se encoge con la palabra; como va en su propia línea, el resto no se mueve.
   typeLoop();
+
+  // Si la palabra más larga no cabe en la columna, se reduce un poco todo el título
+  // para que el expediente de la derecha nunca se encoja ni el texto se salga del recuadro.
+  function fitTitle(){
+    var h1 = field && field.closest('h1'); if (!h1) return;
+    h1.style.fontSize = '';
+    var keep = typed.textContent, avail = h1.getBoundingClientRect().width, need = 0;
+    field.style.maxWidth = 'none';
+    WORDS.forEach(function(x){ typed.textContent = x; need = Math.max(need, field.getBoundingClientRect().width); });
+    typed.textContent = keep; field.style.maxWidth = '';
+    if (need > avail) h1.style.fontSize = (parseFloat(getComputedStyle(h1).fontSize) * avail / need * .98) + 'px';
+  }
+  fitTitle(); window.addEventListener('resize', fitTitle);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitTitle);
 
 })();
 </script>
