@@ -29,19 +29,20 @@
   document.body.appendChild(b);
   var vw = window.innerWidth, vh = window.innerHeight;
   var big = Math.min(vw, vh) * (vw < 760 ? .5 : .32) / size;
-  var start = [vw * .62, vh * .62], end = [lr.left, lr.top];
-  var c1 = [vw * .95, vh * .15], c2 = [vw * .35, vh * .55];
+  // Empieza fuera de la pantalla (a la derecha), ya grande, y entra volando.
+  var start = [vw + big * size * .6, vh * .6], end = [lr.left, lr.top];
+  var c1 = [vw * .6, vh * .02], c2 = [vw * .3, vh * .4];
   function pt(t) { var u = 1 - t; return [0, 1].map(function (k) { return u*u*u*start[k] + 3*u*u*t*c1[k] + 3*u*t*t*c2[k] + t*t*t*end[k]; }); }
-  var dur = vw < 760 ? 2000 : 2400, t0 = null;
+  var dur = vw < 760 ? 2200 : 2600, t0 = null;
   function frame(now) {
     if (t0 === null) t0 = now;
-    var t = Math.min(1, (now - t0) / dur), e = t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
+    var t = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - t, 2.4);
     var p = pt(e), sc = big + (1 - big) * e, sway = Math.sin(t * Math.PI * 3) * 10 * (1 - t);
-    b.style.opacity = Math.min(1, t * 6);
+    b.style.opacity = 1;
     b.style.transform = 'translate(' + (p[0] - (sc - 1) * size / 2) + 'px,' + (p[1] - (sc - 1) * size / 2) + 'px) rotate(' + sway + 'deg) scale(' + sc + ')';
     if (t < 1) requestAnimationFrame(frame);
     else { b.remove(); settle(); try { sessionStorage.setItem('rs_fly', '1'); } catch (e) {} }
   }
-  setTimeout(function () { requestAnimationFrame(frame); }, 350);
+  setTimeout(function () { requestAnimationFrame(frame); }, 250);
   setTimeout(function () { if (b.isConnected) { b.remove(); settle(); } }, 5000);
 })();

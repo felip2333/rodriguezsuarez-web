@@ -207,7 +207,7 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 8px)}
 }
 
 /* ============ HERO ============ */
-.hero{position:relative;padding:clamp(2.5rem,6vw,5rem) 0 clamp(3.5rem,7vw,6rem)}
+.hero{position:relative;padding:clamp(1.25rem,3vw,2.5rem) 0 clamp(3.5rem,7vw,6rem)}
 .hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(var(--dot) 1.2px,transparent 1.2px);background-size:22px 22px;-webkit-mask-image:radial-gradient(ellipse 65% 75% at 72% 45%,#000 20%,transparent 72%);mask-image:radial-gradient(ellipse 65% 75% at 72% 45%,#000 20%,transparent 72%);pointer-events:none}
 .hero-grid{position:relative;display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(2.5rem,6vw,5rem);align-items:center}
 .live-pill{display:inline-flex;align-items:center;gap:.55rem;font-size:.8rem;color:var(--ink-2);border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:.34rem .8rem .34rem .65rem;margin-bottom:1.5rem}
@@ -1625,37 +1625,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   // El recuadro crece y se encoge con la palabra; como va en su propia línea, el resto no se mueve.
   typeLoop();
 
-  if (!logo) return;
-  function settle(){ logo.style.visibility = ''; document.documentElement.classList.remove('fly-wait'); logo.classList.add('flutter'); }
-  var flown = false;
-  try { flown = sessionStorage.getItem('rs_fly') === '1' && !/[?&]vuelo/.test(location.search); } catch (e) {}
-  if (still || flown || window.scrollY > 200) { settle(); return; }
-
-  // Entra grande desde abajo a la derecha, se va haciendo pequeña y se posa en el logo.
-  var b = document.createElement('div'); b.className = 'bfly'; b.innerHTML = '<img src="img/img1.png" alt="">';
-  var lr = logo.getBoundingClientRect(), size = lr.width || 34;
-  b.style.width = b.style.height = size + 'px';
-  document.body.appendChild(b);
-  logo.style.visibility = 'hidden';
-  var vw = window.innerWidth, vh = window.innerHeight;
-  var big = Math.min(vw, vh) * (vw < 760 ? .5 : .32) / size;          // tamaño inicial (escala)
-  var start = [vw * .62, vh * .62], end = [lr.left, lr.top];
-  var c1 = [vw * .95, vh * .15], c2 = [vw * .35, vh * .55];
-  function pt(t){ var u = 1 - t; return [0, 1].map(function(k){ return u*u*u*start[k] + 3*u*u*t*c1[k] + 3*u*t*t*c2[k] + t*t*t*end[k]; }); }
-  var dur = vw < 760 ? 2000 : 2400, t0 = null;
-  function frame(now){
-    if (t0 === null) t0 = now;
-    var t = Math.min(1, (now - t0) / dur), e = t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
-    var p = pt(e), sc = big + (1 - big) * e, sway = Math.sin(t * Math.PI * 3) * 10 * (1 - t);
-    b.style.opacity = Math.min(1, t * 6);
-    b.style.transform = 'translate(' + (p[0] - (sc - 1) * size / 2) + 'px,' + (p[1] - (sc - 1) * size / 2) + 'px) rotate(' + sway + 'deg) scale(' + sc + ')';
-    if (t < 1) requestAnimationFrame(frame);
-    else { b.remove(); settle(); try { sessionStorage.setItem('rs_fly', '1'); } catch (e) {} }
-  }
-  setTimeout(function(){ requestAnimationFrame(frame); }, 350);
-  // Si el navegador no anima (pestaña oculta), que el logo no se quede vacío.
-  setTimeout(function(){ if (b.isConnected) { b.remove(); settle(); } }, 5000);
 })();
 </script>
+<script src="/mariposa.js" defer></script>
 </body>
 </html>
