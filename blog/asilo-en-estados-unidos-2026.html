@@ -143,6 +143,27 @@ a{color:var(--accent-2);text-decoration:underline}
 .nav-link{font-size:.875rem;font-weight:500;color:var(--fg-2);text-decoration:none}
 .nav-link:hover{color:var(--fg)}
 @media(max-width:760px){.nav-links{display:none}}
+.nav-actions{display:flex;align-items:center;gap:.5rem}
+.burger{display:none;width:42px;height:42px;border-radius:10px;align-items:center;justify-content:center;border:1px solid var(--border);background:var(--bg);cursor:pointer}
+.burger span{position:relative;display:block;width:18px;height:2px;border-radius:2px;background:var(--fg);transition:background .2s}
+.burger span::before,.burger span::after{content:"";position:absolute;left:0;width:18px;height:2px;border-radius:2px;background:var(--fg);transition:transform .25s var(--ease)}
+.burger span::before{top:-6px}.burger span::after{top:6px}
+.menu-open .burger span{background:transparent}
+.menu-open .burger span::before{transform:translateY(6px) rotate(45deg)}
+.menu-open .burger span::after{transform:translateY(-6px) rotate(-45deg)}
+.m-menu{display:none}
+@media(max-width:760px){
+  .burger{display:inline-flex}
+  .nav-inner{gap:.75rem}
+  .nav-logo{min-width:0;flex-shrink:1}
+  .logo-icon{width:32px;height:32px}
+  .logo-text{height:12px;max-width:100%}
+  .nav-actions .btn-wa .wa-label{display:none}
+  .nav-actions .btn-wa{padding:.6rem!important}
+  .m-menu{display:grid;gap:.25rem;max-width:1200px;margin:0 auto;padding:0 clamp(1.25rem,4vw,3rem);max-height:0;overflow:hidden;transition:max-height .35s var(--ease),padding .35s var(--ease)}
+  .menu-open .m-menu{max-height:480px;padding-top:.5rem;padding-bottom:1rem}
+  .m-menu a.m-link{font-size:1.05rem;font-weight:600;color:var(--fg);text-decoration:none;padding:.65rem 0;border-bottom:1px solid var(--border)}
+}
 
 article{max-width:720px;margin:0 auto;padding:clamp(2.5rem,6vw,4rem) clamp(1.25rem,4vw,3rem) 1rem}
 .article-tag{font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-2);margin-bottom:1rem;display:block}
@@ -198,16 +219,35 @@ article h3{font-size:1.05rem;font-weight:700;margin:1.5rem 0 .4rem;color:var(--f
       <img class="logo-text" src="/img/logo-text.png" alt="Rodriguez Suarez LLC">
     </a>
     <ul class="nav-links">
+      <li><a href="/#orientador" class="nav-link">¿Qué necesito?</a></li>
       <li><a href="/#servicios" class="nav-link">Servicios</a></li>
+      <li><a href="/#proceso" class="nav-link">Cómo funciona</a></li>
+      <li><a href="/#preguntas" class="nav-link">Preguntas</a></li>
       <li><a href="/blog/" class="nav-link">Blog</a></li>
-      <li><a href="/#contacto" class="nav-link">Contacto</a></li>
     </ul>
-    <a href="https://wa.me/17862016327?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios%20migratorios" target="_blank" rel="noopener" class="btn btn-wa" style="padding:.55rem 1.1rem;font-size:.8125rem">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.955 9.955 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a8 8 0 01-4.243-1.214l-.252-.149-2.868.852.852-2.868-.175-.277A7.98 7.98 0 014 12a8 8 0 1116 0 8 8 0 01-8 8z"/></svg>
-      WhatsApp
-    </a>
+    <div class="nav-actions">
+      <a href="https://wa.me/17862016327?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios%20migratorios" target="_blank" rel="noopener" class="btn btn-wa" style="padding:.55rem 1.1rem;font-size:.8125rem">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.955 9.955 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a8 8 0 01-4.243-1.214l-.252-.149-2.868.852.852-2.868-.175-.277A7.98 7.98 0 014 12a8 8 0 1116 0 8 8 0 01-8 8z"/></svg>
+        <span class="wa-label">WhatsApp</span>
+      </a>
+      <button class="burger" id="burger" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="m-menu"><span></span></button>
+    </div>
+  </div>
+  <div class="m-menu" id="m-menu">
+    <a class="m-link" href="/#orientador">¿Qué trámite necesito?</a>
+    <a class="m-link" href="/#servicios">Servicios</a>
+    <a class="m-link" href="/#proceso">Cómo funciona</a>
+    <a class="m-link" href="/#preguntas">Preguntas</a>
+    <a class="m-link" href="/blog/">Blog</a>
+    <a class="m-link" href="/#contacto">Contacto</a>
   </div>
 </nav>
+<script>
+// Menú del celular: igual que en la página principal.
+(function(){var n=document.querySelector('.nav'),b=document.getElementById('burger');if(!n||!b)return;
+b.addEventListener('click',function(){var o=n.classList.toggle('menu-open');b.setAttribute('aria-expanded',o);b.setAttribute('aria-label',o?'Cerrar menú':'Abrir menú');});
+n.querySelectorAll('.m-link').forEach(function(a){a.addEventListener('click',function(){n.classList.remove('menu-open');b.setAttribute('aria-expanded','false');});});})();
+</script>
 
 <article>
   <span class="article-tag">Asilo</span>
