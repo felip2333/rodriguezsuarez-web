@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<script>/* Oculta el logo desde el primer momento si la mariposa va a volar hasta el */try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&(sessionStorage.getItem("rs_fly")!=="1"||/[?&]vuelo/.test(location.search)))document.documentElement.classList.add("fly-wait")}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rodriguez Suarez LLC | Formularios migratorios en español</title>
 <meta name="description" content="Preparamos los formularios de tu asilo, permiso de trabajo, petición familiar, ajuste de estatus y más. 100% en español, desde tu celular y con pagos en cuotas.">
@@ -223,6 +224,28 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 8px)}
 .checks svg{width:16px;height:16px;color:var(--live)}
 .fine{display:flex;align-items:flex-start;gap:.45rem;font-size:.76rem;color:var(--ink-3);margin-top:1.4rem;max-width:30rem}
 .fine svg{width:14px;height:14px;margin-top:.15rem}
+
+
+/* ===== Hero: título como formulario + mariposa ===== */
+.hero h1.hero-h1{font-size:clamp(2.2rem,4.7vw,3.6rem);line-height:1.12}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* El campo va en su propia línea y tiene un ancho fijo (el de la palabra más larga):
+   así "en español" no sube ni baja mientras se escribe. */
+.field{position:relative;display:flex;align-items:center;width:max-content;max-width:100%;white-space:nowrap;color:var(--brand);background:var(--surface);border:2px solid var(--live);border-radius:.32em;padding:.02em .22em .06em;margin:.32em 0 .12em;box-shadow:0 0 0 .14em var(--live-bg)}
+.field .typed{display:inline-block;min-height:1.1em}
+.field-lab{position:absolute;top:-.62em;left:.42em;font-family:var(--f-mono,ui-monospace,monospace);font-size:.2em;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--live);background:var(--paper);padding:0 .45em;line-height:1.2}
+.caret{display:inline-block;width:.06em;height:.82em;margin-left:.06em;background:var(--live);border-radius:2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+/* Mariposa que entra grande y vuela hasta el logo */
+.bfly{position:fixed;left:0;top:0;z-index:70;pointer-events:none;opacity:0;transform-origin:0 0;will-change:transform,opacity}
+.bfly img{width:100%;height:100%;display:block;transform-origin:50% 55%;animation:flap .2s ease-in-out infinite alternate}
+@keyframes flap{to{transform:scaleX(.35)}}
+/* Ya en el logo: aletea una vez cada 10 segundos */
+.fly-wait .brand .b-icon{visibility:hidden}
+.brand .b-icon.flutter{transform-origin:50% 55%;animation:flutter 10s ease-in-out infinite 2s}
+@keyframes flutter{0%,92%,100%{transform:scaleX(1)}94%{transform:scaleX(.4)}96%{transform:scaleX(1)}98%{transform:scaleX(.5)}}
+@media(max-width:760px){.hero h1.hero-h1{font-size:clamp(1.9rem,8.6vw,2.5rem)}}
+@media(prefers-reduced-motion:reduce){.caret,.brand .b-icon.flutter{animation:none}}
 
 /* Hero: entrada escalonada (solo CSS, no espera al JavaScript) */
 .h-in{animation:rise .7s var(--ease) var(--d,0s) both}
@@ -701,8 +724,8 @@ footer{border-top:1px solid var(--line);padding:clamp(3rem,6vw,4.5rem) 0 2rem;ba
   <div class="wrap hero-grid">
     <div class="hero-text">
       <div class="live-pill h-in" style="--d:.05s"><span class="pulse"></span>Atendemos en los 50 estados · 100% en español</div>
-      <h1 class="h-in" style="--d:.12s"><span class="hl">Tu futuro en Estados Unidos</span> comienza aquí.</h1>
-      <p class="lead h-in" style="--d:.22s">Preparamos los formularios de tu asilo, permiso de trabajo, petición familiar y más. Todo desde tu celular, en español y con pagos en cuotas.</p>
+      <h1 class="h-in hero-h1" style="--d:.12s">Preparamos tu <span class="field" id="hero-field" aria-hidden="true"><span class="field-lab">Trámite</span><span class="typed" id="hero-typed">asilo</span><i class="caret"></i></span><span class="sr-only">asilo, permiso de trabajo, petición familiar y más</span> en español, sin complicaciones.</h1>
+      <p class="lead h-in" style="--d:.22s">Llenamos tus formularios contigo, paso a paso: asilo, permiso de trabajo, petición familiar y más. Sin ir a ninguna oficina y con pagos en cuotas.</p>
       <div class="cta-row h-in" style="--d:.32s">
         <a class="btn btn-wa" href="https://wa.me/17862016327?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios%20migratorios" target="_blank" rel="noopener"><svg><use href="#i-wa"/></svg>Consulta gratis por WhatsApp</a>
         <a class="btn btn-line" href="https://calendly.com/isarodriguez19960206/30min" target="_blank" rel="noopener"><svg><use href="#i-cal"/></svg>Agendar cita</a>
@@ -1573,5 +1596,66 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 <script src="/sofia.js" defer></script>
 <script src="/promo.js" defer></script>
+
+<script>
+/* ===== Hero: campo que se llena + mariposa que vuela al logo ===== */
+(function(){
+  var field = document.getElementById('hero-field'), typed = document.getElementById('hero-typed');
+  var logo = document.querySelector('.brand .b-icon');
+  var WORDS = ['asilo', 'permiso de trabajo', 'petición familiar', 'ajuste de estatus', 'cambio de dirección', 'Seguro Social'];
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Ancho fijo del campo = la palabra más larga, para que nada se mueva.
+  function fixWidth(){
+    if (!field || !typed) return;
+    var keep = typed.textContent, w = 0;
+    typed.style.minWidth = '0';
+    WORDS.forEach(function(x){ typed.textContent = x; w = Math.max(w, typed.getBoundingClientRect().width); });
+    typed.textContent = keep; typed.style.minWidth = Math.ceil(w) + 'px';
+  }
+  function typeLoop(){
+    if (!typed) return;
+    var w = 0, n = WORDS[0].length, del = true;
+    function tick(){
+      if (del) { n--; typed.textContent = WORDS[w].slice(0, n); if (n <= 0) { del = false; w = (w + 1) % WORDS.length; } setTimeout(tick, 38); }
+      else { n++; typed.textContent = WORDS[w].slice(0, n); if (n >= WORDS[w].length) { del = true; setTimeout(tick, 1900); } else setTimeout(tick, 75); }
+    }
+    setTimeout(tick, 1600);
+  }
+  // El recuadro crece y se encoge con la palabra; como va en su propia línea, el resto no se mueve.
+  typeLoop();
+
+  if (!logo) return;
+  function settle(){ logo.style.visibility = ''; document.documentElement.classList.remove('fly-wait'); logo.classList.add('flutter'); }
+  var flown = false;
+  try { flown = sessionStorage.getItem('rs_fly') === '1' && !/[?&]vuelo/.test(location.search); } catch (e) {}
+  if (still || flown || window.scrollY > 200) { settle(); return; }
+
+  // Entra grande desde abajo a la derecha, se va haciendo pequeña y se posa en el logo.
+  var b = document.createElement('div'); b.className = 'bfly'; b.innerHTML = '<img src="img/img1.png" alt="">';
+  var lr = logo.getBoundingClientRect(), size = lr.width || 34;
+  b.style.width = b.style.height = size + 'px';
+  document.body.appendChild(b);
+  logo.style.visibility = 'hidden';
+  var vw = window.innerWidth, vh = window.innerHeight;
+  var big = Math.min(vw, vh) * (vw < 760 ? .5 : .32) / size;          // tamaño inicial (escala)
+  var start = [vw * .62, vh * .62], end = [lr.left, lr.top];
+  var c1 = [vw * .95, vh * .15], c2 = [vw * .35, vh * .55];
+  function pt(t){ var u = 1 - t; return [0, 1].map(function(k){ return u*u*u*start[k] + 3*u*u*t*c1[k] + 3*u*t*t*c2[k] + t*t*t*end[k]; }); }
+  var dur = vw < 760 ? 2000 : 2400, t0 = null;
+  function frame(now){
+    if (t0 === null) t0 = now;
+    var t = Math.min(1, (now - t0) / dur), e = t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
+    var p = pt(e), sc = big + (1 - big) * e, sway = Math.sin(t * Math.PI * 3) * 10 * (1 - t);
+    b.style.opacity = Math.min(1, t * 6);
+    b.style.transform = 'translate(' + (p[0] - (sc - 1) * size / 2) + 'px,' + (p[1] - (sc - 1) * size / 2) + 'px) rotate(' + sway + 'deg) scale(' + sc + ')';
+    if (t < 1) requestAnimationFrame(frame);
+    else { b.remove(); settle(); try { sessionStorage.setItem('rs_fly', '1'); } catch (e) {} }
+  }
+  setTimeout(function(){ requestAnimationFrame(frame); }, 350);
+  // Si el navegador no anima (pestaña oculta), que el logo no se quede vacío.
+  setTimeout(function(){ if (b.isConnected) { b.remove(); settle(); } }, 5000);
+})();
+</script>
 </body>
 </html>
