@@ -14,5 +14,7 @@
       try{var u=new URL(a.href);var t=u.searchParams.get('text')||'Hola, quiero información.';if(t.indexOf('encontré en Google')<0){u.searchParams.set('text',t+'\n\n(Los encontré en Google)');a.href=u.toString();}}catch(err){}
     }
     if(window.gtag)gtag('event','click_whatsapp',{ubicacion:a.dataset.cta||'blog',pagina:location.pathname});
+    // Conversión directa en Google Ads: "Clic en WhatsApp (web)" (categoría Contacto)
+    if(window.gtag)gtag('event','conversion',{send_to:'AW-18548675612/qtZwCKum2rYdEJyo2YxF'});
   });
 })();
