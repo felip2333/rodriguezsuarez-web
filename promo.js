@@ -25,7 +25,7 @@
   function seenThisVisit() { try { return sessionStorage.getItem('rs_promo_seen') === '1'; } catch (e) { return false; } }
   // Si entran por el enlace de la promoción (?promo=...), se muestra enseguida aunque la hayan cerrado antes.
   var fromLink = /[?&]promo=/.test(location.search);
-  if (!fromLink && (snoozed() || seenThisVisit())) return;
+  // (Si ya se vio o se cerró, no sale sola —show() lo comprueba—, pero se puede abrir desde la cinta.)
   function track(name, params) { if (window.gtag) window.gtag('event', name, params || {}); }
 
   // Estética de "Black Friday": fondo verde casi negro con dorado, siempre oscura a propósito
@@ -184,6 +184,12 @@ html.rp-open .sofia-launch,html.rp-open .sofia-nudge{visibility:hidden}\
   window.addEventListener('scroll', function () {
     if (!shown && Date.now() - armed > 6000 && pct() >= SCROLL_AT) show('scroll');
   }, { passive: true });
+  // Abrir la promo a mano (p. ej. desde la cinta de arriba), aunque ya se haya visto o cerrado.
+  window.openPromo = function (from) {
+    fromLink = true; shown = false;
+    if (root) root.style.display = '';
+    show(from || 'manual');
+  };
   setTimeout(function () { show(fromLink ? 'enlace' : 'tiempo'); }, fromLink ? 1500 : DELAY_MS);
   // En computador, también cuando el mouse va a salir de la página (a cerrar o cambiar de pestaña).
   if (window.matchMedia('(min-width:641px)').matches) {

@@ -247,6 +247,51 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 8px)}
 @media(max-width:760px){.hero h1.hero-h1{font-size:clamp(1.9rem,8.6vw,2.5rem)}}
 @media(prefers-reduced-motion:reduce){.caret,.brand .b-icon.flutter{animation:none}}
 
+
+/* ===== Hero: cinta superior + sello 3D + "%" inflado (inspirado en Hostinger, versión sobria) ===== */
+button.ticker{position:relative;z-index:61;display:flex;overflow:hidden;background:#064E3B;border-radius:0;color:#ECFDF5;font-size:.82rem;font-weight:600;letter-spacing:.01em;white-space:nowrap;cursor:pointer;border:0;width:100%;padding:0;text-align:left}
+.ticker:focus-visible{outline:2px solid #FBBF24;outline-offset:-2px}
+.ticker-track{display:flex;flex-shrink:0;animation:tick 38s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+.ticker-item{display:inline-flex;align-items:center;gap:.55rem;padding:.5rem 1.4rem .5rem 0}
+.ticker-item b{color:#FBBF24;font-weight:800}
+.ticker-sep{color:#FBBF24;font-size:.7rem;padding-right:1.4rem;align-self:center}
+@keyframes tick{to{transform:translateX(-100%)}}
+
+/* Sello giratorio pegado al expediente */
+.seal{position:absolute;z-index:4;top:-.6rem;left:-1.6rem;width:118px;height:118px;display:grid;place-items:center;text-decoration:none;cursor:pointer;
+  animation:propIn .9s cubic-bezier(.2,1.5,.4,1) .9s both}
+.seal svg.burst{position:absolute;inset:0;width:100%;height:100%;animation:spin 18s linear infinite;filter:drop-shadow(0 10px 18px rgba(6,78,59,.35))}
+.seal svg.ring{position:absolute;inset:0;width:100%;height:100%}
+.seal span{position:relative;text-align:center;line-height:1;font-weight:900;color:#1A1205}
+.seal small{display:block;font-size:.62rem;letter-spacing:.12em}
+.seal strong{display:block;font-size:1.25rem;letter-spacing:-.02em;margin:.12rem 0}
+.seal em{display:block;font-style:normal;font-size:.56rem;font-weight:800;letter-spacing:.04em}
+.seal:hover svg.burst{animation-duration:5s}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* "%" inflado en 3D, flotando detrás del expediente */
+.puff{position:absolute;z-index:0;pointer-events:none;font-family:var(--f-display);font-weight:900;line-height:1;user-select:none;
+  background:radial-gradient(circle at 30% 25%,#FFF6D6 0%,#FCD34D 22%,#F59E0B 58%,#B45309 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 2px 0 #B45309) drop-shadow(0 6px 0 #92400E) drop-shadow(0 18px 22px rgba(146,64,14,.35));
+  animation:propIn 1s cubic-bezier(.2,1.4,.4,1) .6s both}
+.puff i{display:inline-block;font-style:normal;animation:float 6s ease-in-out infinite}
+.puff.p1{z-index:5;right:-2.6rem;bottom:.6rem;font-size:7rem}
+.puff.p1 i{transform:rotate(14deg)}
+.puff.p2{z-index:5;left:-2.6rem;bottom:5rem;font-size:3.4rem;animation-delay:.8s;opacity:.95}
+.puff.p2 i{animation-delay:-2s;animation-duration:7s}
+@keyframes float{0%,100%{transform:translateY(0) rotate(12deg)}50%{transform:translateY(-14px) rotate(4deg)}}
+@keyframes propIn{from{opacity:0;transform:scale(.4) rotate(-25deg)}to{opacity:1;transform:none}}
+
+@media(max-width:760px){
+  .ticker{font-size:.74rem}
+  .seal{width:92px;height:92px;left:-.4rem;top:-1.4rem}
+  .seal strong{font-size:1rem}
+  .puff.p1{right:-.6rem;font-size:5rem}
+  .puff.p2{display:none}
+}
+@media(prefers-reduced-motion:reduce){.ticker-track,.seal svg.burst,.puff i{animation:none}.ticker{overflow-x:auto}}
+
 /* Hero: entrada escalonada (solo CSS, no espera al JavaScript) */
 .h-in{animation:rise .7s var(--ease) var(--d,0s) both}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}}
@@ -688,6 +733,10 @@ footer{border-top:1px solid var(--line);padding:clamp(3rem,6vw,4.5rem) 0 2rem;ba
 </svg>
 
 <!-- NAV -->
+<!-- Hero: cinta superior -->
+<button class="ticker" id="ticker" type="button" aria-label="Ver la promoción: preparación del permiso de trabajo gratis">
+  <span class="ticker-track" id="ticker-track"></span><span class="ticker-track" aria-hidden="true" id="ticker-track2"></span>
+</button>
 <nav class="nav" id="nav" aria-label="Principal">
   <div class="wrap nav-in">
     <a href="#inicio" class="brand" aria-label="Rodriguez Suarez LLC, ir al inicio">
@@ -740,6 +789,13 @@ footer{border-top:1px solid var(--line);padding:clamp(3rem,6vw,4.5rem) 0 2rem;ba
     </div>
 
     <div class="hero-visual h-in" style="--d:.2s" role="img" aria-label="Ejemplo del portal del cliente: un expediente de asilo avanzando paso a paso">
+      <!-- Hero: sello y "%" en 3D -->
+      <a class="seal" id="seal" href="#" aria-label="Ver la promoción del permiso de trabajo gratis">
+        <svg class="burst" viewBox="0 0 120 120" aria-hidden="true"><defs><radialGradient id="sg" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#FFF4C2"/><stop offset=".45" stop-color="#FBBF24"/><stop offset="1" stop-color="#D97706"/></radialGradient></defs><path fill="url(#sg)" d="M60.0 2.0 L66.7 9.4 L75.0 4.0 L79.5 12.9 L89.0 9.8 L91.0 19.5 L101.0 19.0 L100.5 29.0 L110.2 31.0 L107.1 40.5 L116.0 45.0 L110.6 53.3 L118.0 60.0 L110.6 66.7 L116.0 75.0 L107.1 79.5 L110.2 89.0 L100.5 91.0 L101.0 101.0 L91.0 100.5 L89.0 110.2 L79.5 107.1 L75.0 116.0 L66.7 110.6 L60.0 118.0 L53.3 110.6 L45.0 116.0 L40.5 107.1 L31.0 110.2 L29.0 100.5 L19.0 101.0 L19.5 91.0 L9.8 89.0 L12.9 79.5 L4.0 75.0 L9.4 66.7 L2.0 60.0 L9.4 53.3 L4.0 45.0 L12.9 40.5 L9.8 31.0 L19.5 29.0 L19.0 19.0 L29.0 19.5 L31.0 9.8 L40.5 12.9 L45.0 4.0 L53.3 9.4Z"/></svg><svg class="ring" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="42" fill="none" stroke="#1A1205" stroke-opacity=".22" stroke-width="1.4" stroke-dasharray="3 4"/></svg>
+        <span><small>PERMISO</small><strong>GRATIS</strong><em>hasta el 31 dic</em></span>
+      </a>
+      <div class="puff p1" aria-hidden="true"><i>%</i></div>
+      <div class="puff p2" aria-hidden="true"><i>%</i></div>
       <div class="case-back" aria-hidden="true">
         <div class="cb-row"><span class="mono">Expediente RS-0138</span><span class="status">Listo</span></div>
         <div class="cb-title">Permiso de trabajo <span class="mono" style="font-size:.72rem;color:var(--ink-3);font-weight:400">I-765</span></div>
@@ -1639,6 +1695,38 @@ document.addEventListener('DOMContentLoaded',()=>{
   fitTitle(); window.addEventListener('resize', fitTitle);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitTitle);
 
+})();
+</script>
+
+<script>
+/* ===== Hero: cinta y sello ===== */
+(function(){
+  var now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  var ymd = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+  var promo = ymd <= '2026-12-31';
+  var items = promo ? [
+    '<b>' + (ymd < '2026-12-01' ? 'Black Friday' : 'Promo de fin de año') + '</b> · tu permiso de trabajo <b>gratis</b> con asilo o petición familiar',
+    'Válido hasta el 31 de diciembre · solo clientes nuevos',
+    'Atendemos en los 50 estados · 100% en español',
+    'Pagos en cuotas · sin ir a ninguna oficina',
+  ] : [
+    'Atendemos en los 50 estados · 100% en español',
+    'Pagos en cuotas · sin ir a ninguna oficina',
+    'Sigue tu caso en tu portal privado',
+  ];
+  var html = items.map(function (t) { return '<span class="ticker-item">' + t + '</span><span class="ticker-sep">✦</span>'; }).join('');
+  document.getElementById('ticker-track').innerHTML = html;
+  document.getElementById('ticker-track2').innerHTML = html;
+  function openP(e, from){
+    if (e) e.preventDefault();
+    if (!promo) { location.href = 'https://wa.me/17862016327'; return; }
+    if (window.openPromo) window.openPromo(from); else location.search = '?promo=' + from;
+    if (window.gtag) gtag('event', 'promo_click', { origen: from });
+  }
+  document.getElementById('ticker').addEventListener('click', function (e) { openP(e, 'cinta'); });
+  var seal = document.getElementById('seal');
+  if (!promo) { seal.remove(); document.querySelectorAll('.puff').forEach(function (x) { x.remove(); }); }
+  else seal.addEventListener('click', function (e) { openP(e, 'sello'); });
 })();
 </script>
 <script src="/mariposa.js" defer></script>
