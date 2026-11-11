@@ -37,7 +37,7 @@
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
   "name": "Rodriguez Suarez LLC",
-  "description": "Servicio de preparación de formularios migratorios en español: asilo, permiso de trabajo, petición familiar, ajuste de estatus y más. No somos un despacho de abogados.",
+  "description": "Servicio de preparación de formularios migratorios en español: asilo, permiso de trabajo, petición familiar, ajuste de estatus y más, en los 50 estados de EE. UU.",
   "url": "https://rodriguezsuarezllc.com/",
   "logo": "https://rodriguezsuarezllc.com/img/img1.png",
   "image": "https://rodriguezsuarezllc.com/img/img3.jpg",
@@ -59,7 +59,6 @@
   "@type": "FAQPage",
   "mainEntity": [
     {"@type":"Question","name":"¿Cómo son las opciones de pago?","acceptedAnswer":{"@type":"Answer","text":"Ofrecemos planes de pago en cuotas. Trabajamos contigo para encontrar la opción que se adapte a tu presupuesto."}},
-    {"@type":"Question","name":"¿Son abogados?","acceptedAnswer":{"@type":"Answer","text":"No. Rodriguez Suarez LLC es un servicio de preparación de documentos migratorios. Preparamos tus formularios con la información que tú nos das, pero no damos asesoría legal ni te representamos ante USCIS o la corte. Si tu caso necesita un abogado, te lo decimos para que consultes con un abogado de inmigración con licencia."}},
     {"@type":"Question","name":"¿Por qué son seguros y confiables?","acceptedAnswer":{"@type":"Answer","text":"Somos una empresa registrada en Estados Unidos (Rodriguez Suarez LLC). Cada cliente firma un contrato de servicio claro, recibe un recibo por cada pago y tiene un portal privado para ver el avance de su caso. No pedimos el pago completo por adelantado: trabajamos con cuotas. Y puedes escribirnos por WhatsApp cuando lo necesites."}},
     {"@type":"Question","name":"¿Cómo funciona el proceso 100% digital?","acceptedAnswer":{"@type":"Answer","text":"Todo se hace desde tu celular o computadora. Nos escribes por WhatsApp, te enviamos la lista de lo que necesitamos, recibimos tu información de forma segura y preparamos tus formularios. No necesitas visitar ninguna oficina."}},
     {"@type":"Question","name":"¿Pueden incluir a mi familia en el mismo caso?","acceptedAnswer":{"@type":"Answer","text":"Sí. En procesos como el asilo, tu cónyuge e hijos menores pueden ir en la misma solicitud. Te explicamos las opciones durante tu consulta gratuita."}},
@@ -291,6 +290,8 @@ button.ticker{position:relative;z-index:61;display:flex;overflow:hidden;backgrou
   .puff.p2{display:none}
 }
 @media(prefers-reduced-motion:reduce){.ticker-track,.seal svg.burst,.puff i{animation:none}.ticker{overflow-x:auto}}
+
+
 
 /* Hero: entrada escalonada (solo CSS, no espera al JavaScript) */
 .h-in{animation:rise .7s var(--ease) var(--d,0s) both}
@@ -717,6 +718,16 @@ footer{border-top:1px solid var(--line);padding:clamp(3rem,6vw,4.5rem) 0 2rem;ba
   .track{flex-wrap:wrap;width:auto;justify-content:center}
   .track .dup{display:none}
 }
+/* ===== Acento dorado (regla 60-30-10: 60% claro · 30% verde · 10% dorado) ===== */
+:root{--gold:#E9A820;--gold-2:#F7C84B;--gold-ink:#8A5A00;--gold-bg:rgba(233,168,32,.14)}
+.us-flag{width:19px;height:10px;border-radius:2px;flex-shrink:0;box-shadow:0 0 0 1px rgba(15,31,23,.08)}
+.live-pill b{color:var(--ink);font-weight:700}
+.kicker{color:var(--gold-ink)}
+.kicker::before{background:var(--gold)}
+.p-num{border-color:var(--gold);color:var(--gold-ink);background:linear-gradient(180deg,#FFFBEF,#FFF3D3)}
+.stat-num .suf{color:var(--gold-2)}
+.field-lab{color:var(--gold-ink)}
+.caret{background:var(--gold)}
 </style>
 </head>
 <body>
@@ -772,9 +783,9 @@ footer{border-top:1px solid var(--line);padding:clamp(3rem,6vw,4.5rem) 0 2rem;ba
 <header class="hero">
   <div class="wrap hero-grid">
     <div class="hero-text">
-      <div class="live-pill h-in" style="--d:.05s"><span class="pulse"></span>Atendemos en los 50 estados · 100% en español</div>
+      <div class="live-pill h-in" style="--d:.05s"><svg class="us-flag" viewBox="0 0 19 10" aria-hidden="true"><rect width="19" height="10" fill="#B22234"/><path d="M0 1.15h19M0 2.7h19M0 4.23h19M0 5.77h19M0 7.3h19M0 8.85h19" stroke="#fff" stroke-width=".77"/><rect width="7.6" height="5.38" fill="#3C3B6E"/></svg>Inmigración en <b>Estados Unidos</b> · los 50 estados · 100% en español</div>
       <h1 class="h-in hero-h1" style="--d:.12s">Preparamos tu <span class="field" id="hero-field" aria-hidden="true"><span class="field-lab">Trámite</span><span class="typed" id="hero-typed">asilo</span><i class="caret"></i></span><span class="sr-only">asilo, permiso de trabajo, petición familiar y más</span> en español, sin complicaciones.</h1>
-      <p class="lead h-in" style="--d:.22s">Llenamos tus formularios contigo, paso a paso: asilo, permiso de trabajo, petición familiar y más. Sin ir a ninguna oficina y con pagos en cuotas.</p>
+      <p class="lead h-in" style="--d:.22s">Llenamos contigo tus formularios de inmigración de Estados Unidos, paso a paso: asilo, permiso de trabajo, petición familiar y más. Sin ir a ninguna oficina y con pagos en cuotas.</p>
       <div class="cta-row h-in" style="--d:.32s">
         <a class="btn btn-wa" href="https://wa.me/17862016327?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20sus%20servicios%20migratorios" target="_blank" rel="noopener"><svg><use href="#i-wa"/></svg>Consulta gratis por WhatsApp</a>
         <a class="btn btn-line" href="https://calendly.com/isarodriguez19960206/30min" target="_blank" rel="noopener"><svg><use href="#i-cal"/></svg>Agendar cita</a>
@@ -785,7 +796,6 @@ footer{border-top:1px solid var(--line);padding:clamp(3rem,6vw,4.5rem) 0 2rem;ba
         <li><svg><use href="#i-check"/></svg>Pagos en cuotas</li>
         <li><svg><use href="#i-check"/></svg>100% digital</li>
       </ul>
-      <p class="fine h-in" style="--d:.5s"><svg><use href="#i-info"/></svg>Somos un servicio de preparación de documentos, no un despacho de abogados.</p>
     </div>
 
     <div class="hero-visual h-in" style="--d:.2s" role="img" aria-label="Ejemplo del portal del cliente: un expediente de asilo avanzando paso a paso">
@@ -1109,7 +1119,6 @@ footer{border-top:1px solid var(--line);padding:clamp(3rem,6vw,4.5rem) 0 2rem;ba
     </div>
     <div class="faq-list reveal" style="--d:.08s">
       <div class="faq-item"><button class="faq-q" aria-expanded="false">¿Cómo son las opciones de pago?<span class="pm" aria-hidden="true"></span></button><div class="faq-a"><div><p>Ofrecemos planes de pago en cuotas. Trabajamos contigo para encontrar la opción que se adapte a tu presupuesto.</p></div></div></div>
-      <div class="faq-item"><button class="faq-q" aria-expanded="false">¿Son abogados?<span class="pm" aria-hidden="true"></span></button><div class="faq-a"><div><p>No. Rodriguez Suarez LLC es un servicio de preparación de documentos migratorios. Preparamos tus formularios con la información que tú nos das, pero no damos asesoría legal ni te representamos ante USCIS o la corte. Si tu caso necesita un abogado, te lo decimos para que consultes con un abogado de inmigración con licencia.</p></div></div></div>
       <div class="faq-item"><button class="faq-q" aria-expanded="false">¿Por qué son seguros y confiables?<span class="pm" aria-hidden="true"></span></button><div class="faq-a"><div><p>Somos una empresa registrada en Estados Unidos (Rodriguez Suarez LLC). Cada cliente firma un contrato de servicio claro, recibe un recibo por cada pago y tiene un portal privado para ver el avance de su caso. No pedimos el pago completo por adelantado: trabajamos con cuotas. Y puedes escribirnos por WhatsApp cuando lo necesites.</p></div></div></div>
       <div class="faq-item"><button class="faq-q" aria-expanded="false">¿Cómo funciona el proceso 100% digital?<span class="pm" aria-hidden="true"></span></button><div class="faq-a"><div><p>Todo se hace desde tu celular o computadora. Nos escribes por WhatsApp, te enviamos la lista de lo que necesitamos, recibimos tu información de forma segura y preparamos tus formularios. No necesitas visitar ninguna oficina.</p></div></div></div>
       <div class="faq-item"><button class="faq-q" aria-expanded="false">¿Pueden incluir a mi familia en el mismo caso?<span class="pm" aria-hidden="true"></span></button><div class="faq-a"><div><p>Sí. En procesos como el asilo, tu cónyuge e hijos menores pueden ir en la misma solicitud. Te explicamos las opciones durante tu consulta gratuita.</p></div></div></div>
@@ -1214,7 +1223,7 @@ footer{border-top:1px solid var(--line);padding:clamp(3rem,6vw,4.5rem) 0 2rem;ba
         </div>
         <div class="f-group"><label class="f-label" for="message">Cuéntanos tu situación <span class="opt">(opcional)</span></label><textarea id="message" class="f-input" rows="4" placeholder="Describe brevemente tu caso..."></textarea></div>
         <button type="submit" class="btn btn-wa"><svg><use href="#i-wa"/></svg>Enviar por WhatsApp</button>
-        <p class="f-note">Al enviar aceptas nuestra <a href="privacidad.html#privacidad" style="text-decoration:underline">Política de Privacidad</a>. Rodriguez Suarez LLC no es un despacho de abogados y enviar este formulario no crea una relación abogado-cliente.</p>
+        <p class="f-note">Al enviar aceptas nuestra <a href="privacidad.html#privacidad" style="text-decoration:underline">Política de Privacidad</a>. Enviar este formulario no crea ninguna obligación de contratar.</p>
       </form>
       <div class="f-success" id="form-success" role="status">
         <div class="big"><svg><use href="#i-check"/></svg></div>

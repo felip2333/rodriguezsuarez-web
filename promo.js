@@ -121,7 +121,7 @@ html.rp-open .sofia-launch,html.rp-open .sofia-nudge{visibility:hidden}\
           '<button class="rp-btn rp-sofia" type="button">' + ICON.chat + 'Quiero el descuento</button>' +
           '<a class="rp-btn rp-wa" href="' + WA + '" target="_blank" rel="noopener" data-cta="promo">' + ICON.wa + 'WhatsApp</a>' +
         '</div>' +
-        '<p class="rp-fine">Solo clientes nuevos, casos contratados hasta el 31/12/2026, cuando califiques para pedir el permiso (en asilo, desde los 150 días). Tarifas de USCIS aparte; el permiso lo decide USCIS. No somos abogados.</p>' +
+        '<p class="rp-fine">Solo clientes nuevos, casos contratados hasta el 31/12/2026, cuando califiques para pedir el permiso (en asilo, desde los 150 días). Tarifas de USCIS aparte; el permiso lo decide USCIS.</p>' +
       '</section>';
     document.body.appendChild(root);
     root.querySelector('.rp-x').addEventListener('click', function () { dismiss('cerrar'); });
