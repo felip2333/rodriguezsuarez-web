@@ -72,6 +72,7 @@
 </script>
 
 <!-- Google tag (gtag.js) -->
+<script>/* Tráfico interno (equipo, pruebas): no se mide en Analytics, Ads ni Clarity. Abre la web una vez con ?interno=1 en cada dispositivo del equipo (?interno=0 lo quita). */(function(){var i=/^(localhost|127\.0\.0\.1)$/.test(location.hostname)||/preview-/.test(location.pathname);try{if(/[?&]interno=1/.test(location.search))localStorage.setItem("rs_internal","1");if(/[?&]interno=0/.test(location.search))localStorage.removeItem("rs_internal");i=i||localStorage.getItem("rs_internal")==="1"}catch(e){}window.RS_INTERNAL=i;if(i){window["ga-disable-G-P1N46P4VDH"]=true;window["ga-disable-AW-18548675612"]=true}})();</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-P1N46P4VDH"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -88,7 +89,7 @@
 
 <!-- Microsoft Clarity -->
 <script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
+    if(!window.RS_INTERNAL)(function(c,l,a,r,i,t,y){
         c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
         t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
