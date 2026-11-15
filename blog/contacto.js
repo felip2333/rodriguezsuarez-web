@@ -59,4 +59,85 @@
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+// Formularios que se pueden tocar: cada código (I-130, I-485…) dentro del artículo abre una
+// explicación corta y un botón para preguntar por WhatsApp. Así esos toques que antes no
+// hacían nada llevan a una conversación.
+(function () {
+  var FORMS = {
+    'I-130': ['Petición familiar', 'Un ciudadano o residente pide a su familiar ante USCIS.'],
+    'I-130A': ['Datos del cónyuge', 'Información del esposo o esposa que va junto con el I-130.'],
+    'I-485': ['Ajuste de estatus', 'La solicitud de residencia (green card) sin salir de EE. UU.'],
+    'I-765': ['Permiso de trabajo', 'La solicitud para trabajar legalmente en EE. UU.'],
+    'I-589': ['Solicitud de asilo', 'El formulario para pedir asilo y la suspensión de deportación.'],
+    'I-864': ['Patrocinio económico', 'El peticionario demuestra que puede apoyar a su familiar.'],
+    'I-693': ['Examen médico', 'Lo hace un médico autorizado por USCIS y va en sobre sellado.'],
+    'I-131': ['Permiso de viaje', 'Para salir y volver a EE. UU. mientras el caso sigue pendiente.'],
+    'I-94': ['Registro de entrada', 'El documento que muestra cuándo y cómo entraste al país.'],
+    'I-797': ['Aviso de USCIS', 'Las cartas de recibo y de aprobación que envía USCIS.'],
+    'AR-11': ['Cambio de dirección (USCIS)', 'Para avisar a USCIS que te mudaste, dentro de 10 días.'],
+    'EOIR-33': ['Cambio de dirección (corte)', 'Para avisar a la corte de inmigración tu nueva dirección.'],
+    'EOIR-42B': ['Cancelación de deportación', 'Para personas sin residencia con 10 años en EE. UU.'],
+    'EOIR-42A': ['Cancelación de deportación', 'Para residentes permanentes en proceso de deportación.'],
+    'SS-5': ['Seguro Social', 'La solicitud de tu número de Seguro Social.'],
+    'G-1055': ['Tarifas de USCIS', 'La guía oficial con lo que cuesta cada formulario.']
+  };
+  var RE = /\b(I-130A|I-130|I-485|I-765|I-589|I-864|I-693|I-131|I-94|I-797|AR-11|EOIR-33|EOIR-42B|EOIR-42A|SS-5|G-1055)\b/g;
+  var st2 = document.createElement('style');
+  st2.textContent =
+    '.rs-form{all:unset;cursor:pointer;font-weight:inherit;color:inherit;border-bottom:1.5px dotted #10B981;padding:0 1px;border-radius:3px}' +
+    '.rs-form:hover,.rs-form:focus-visible{background:rgba(16,185,129,.12);outline:none}' +
+    '.rs-pop{position:absolute;z-index:80;width:min(290px,calc(100vw - 24px));background:#fff;color:#0F1F17;border:1px solid rgba(0,0,0,.1);border-radius:14px;box-shadow:0 18px 40px -14px rgba(6,40,28,.4);padding:.85rem .95rem;font-size:.9rem;line-height:1.4;font-weight:400}' +
+    '.rs-pop b{display:block;font-size:.95rem;margin-bottom:.15rem}.rs-pop small{display:block;font-size:.72rem;letter-spacing:.06em;color:#0f766e;font-weight:700;margin-bottom:.1rem}' +
+    '.rs-pop p{margin:0 0 .65rem}.rs-pop .rs-wa{font-size:.85rem;padding:.55rem .85rem}' +
+    '@media(prefers-color-scheme:dark){.rs-pop{background:#111916;color:#EEF5F1;border-color:rgba(190,255,225,.14)}}';
+  document.head.appendChild(st2);
+
+  // Envolver los códigos en el texto (párrafos, listas y tablas; no en títulos ni enlaces)
+  var walker = document.createTreeWalker(article, NodeFilter.SHOW_TEXT, {
+    acceptNode: function (n) {
+      var p = n.parentElement;
+      if (!p || p.closest('a,button,h1,h2,h3,script,style,.rs-intro,.rs-pop,.ask-box,.cta-box')) return NodeFilter.FILTER_REJECT;
+      RE.lastIndex = 0;
+      return RE.test(n.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    }
+  });
+  var nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(function (n) {
+    var frag = document.createDocumentFragment(), text = n.nodeValue, last = 0, m;
+    RE.lastIndex = 0;
+    while ((m = RE.exec(text))) {
+      frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'rs-form'; b.textContent = m[0]; b.dataset.f = m[0];
+      b.setAttribute('aria-label', m[0] + ': ' + FORMS[m[0]][0] + '. Toca para ver qué es');
+      frag.appendChild(b);
+      last = m.index + m[0].length;
+    }
+    frag.appendChild(document.createTextNode(text.slice(last)));
+    n.parentNode.replaceChild(frag, n);
+  });
+
+  var pop = null;
+  function closePop() { if (pop) { pop.remove(); pop = null; } }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('.rs-form');
+    if (!b) { if (pop && !e.target.closest('.rs-pop')) closePop(); return; }
+    e.preventDefault();
+    closePop();
+    var f = b.dataset.f, info = FORMS[f];
+    var link = 'https://wa.me/17862016327?text=' + encodeURIComponent('Hola, tengo una pregunta sobre el formulario ' + f + ' (' + info[0].toLowerCase() + ').');
+    pop = document.createElement('div');
+    pop.className = 'rs-pop'; pop.setAttribute('role', 'dialog'); pop.setAttribute('aria-label', f);
+    pop.innerHTML = '<small>' + f + '</small><b>' + info[0] + '</b><p>' + info[1] + '</p><a class="rs-wa" href="' + link + '" target="_blank" rel="noopener" data-cta="blog_formulario">' + ICON + 'Pregúntanos por tu caso</a>';
+    document.body.appendChild(pop);
+    var r = b.getBoundingClientRect(), w = pop.offsetWidth;
+    var left = Math.min(Math.max(12, r.left + window.scrollX + r.width / 2 - w / 2), window.scrollX + document.documentElement.clientWidth - w - 12);
+    var top = r.bottom + window.scrollY + 8;
+    if (r.bottom + pop.offsetHeight + 90 > window.innerHeight) top = r.top + window.scrollY - pop.offsetHeight - 8;
+    pop.style.left = left + 'px'; pop.style.top = top + 'px';
+    if (window.gtag) window.gtag('event', 'formulario_tocado', { formulario: f, pagina: location.pathname });
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closePop(); });
+  window.addEventListener('resize', closePop);
+})();
 })();
