@@ -24,7 +24,21 @@
   }
   function load() { try { return JSON.parse(sessionStorage.getItem(STORE) || 'null') || { msgs: [] }; } catch (e) { return { msgs: [] }; } }
   function save() { try { sessionStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} }
-  function track(name, params) { if (window.gtag) window.gtag('event', name, params || {}); }
+  // Prueba A/B: cada visitante recibe al azar una versión de Sofía y la conserva 90 días.
+  //   A = pide el WhatsApp en su primera respuesta · B = responde 1-2 dudas y lo pide en la segunda.
+  // ?sofia=A o ?sofia=B en la URL fuerza una versión (para probar).
+  var AB = (function () {
+    var forced = (location.search.match(/[?&]sofia=([AB])/i) || [])[1];
+    if (forced) return forced.toUpperCase();
+    try {
+      var v = JSON.parse(localStorage.getItem('rs_sofia_ab') || 'null');
+      if (v && /^[AB]$/.test(v.g) && Date.now() - v.t < 90 * 864e5) return v.g;
+      var g = Math.random() < 0.5 ? 'A' : 'B';
+      localStorage.setItem('rs_sofia_ab', JSON.stringify({ g: g, t: Date.now() }));
+      return g;
+    } catch (e) { return 'A'; }
+  })();
+  function track(name, params) { params = params || {}; params.sofia_ab = AB; if (window.gtag) window.gtag('event', name, params); }
 
   var state = load();
   var busy = false;
@@ -271,7 +285,7 @@
     if (state.msgs.filter(function (m) { return m.k === 'me'; }).length === 1) track('sofia_primer_mensaje');
     busy = true; sendBtn.disabled = true; typing(true);
     var g = fromGoogle();
-    var visitor = { tz: (Intl.DateTimeFormat().resolvedOptions() || {}).timeZone || '', page: location.pathname, fromGoogle: !!g, campaign: g ? g.c : '' };
+    var visitor = { tz: (Intl.DateTimeFormat().resolvedOptions() || {}).timeZone || '', page: location.pathname, fromGoogle: !!g, campaign: g ? g.c : '', ab: AB };
     fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'message', chatId: state.chatId || null, text: text, visitor: visitor }) })
       .then(function (r) { return r.json().catch(function () { return {}; }); })
       .then(function (d) {
