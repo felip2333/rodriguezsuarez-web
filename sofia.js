@@ -82,6 +82,19 @@
 .sofia-send{width:42px;height:42px;flex-shrink:0;border-radius:12px;border:0;display:grid;place-items:center;background:var(--s-brand);color:var(--s-brand-ink);cursor:pointer}\
 .sofia-send:disabled{opacity:.45;cursor:default}\
 .sofia-send svg{width:18px;height:18px}\
+.sofia-handoff{display:none;align-items:center;gap:.6rem;padding:.55rem .75rem;border-top:1px solid var(--s-line);background:var(--s-bg)}\
+.sofia-handoff.on{display:flex}\
+.sofia-handoff span{flex:1;font-size:.76rem;line-height:1.3;color:var(--s-ink2)}\
+.sofia-handoff a{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .8rem;border-radius:999px;background:#25D366;color:#05361C;font-size:.82rem;font-weight:700;text-decoration:none;white-space:nowrap}\
+.sofia-handoff a svg{width:16px;height:16px}\
+.sofia-phone{align-self:stretch;display:flex;flex-direction:column;gap:.45rem;padding:.7rem;background:var(--s-bg);border:1px solid var(--s-line);border-radius:14px}\
+.sofia-phone label{font-size:.76rem;font-weight:600;color:var(--s-ink2)}\
+.sofia-phone-row{display:flex;gap:.4rem}\
+.sofia-phone select,.sofia-phone input{font:inherit;font-size:16px;padding:.55rem .6rem;border:1px solid var(--s-line);border-radius:10px;background:var(--s-bg2);color:var(--s-ink);min-width:0}\
+.sofia-phone select{flex:0 0 auto;max-width:42%}\
+.sofia-phone input{flex:1}\
+.sofia-phone button{font:inherit;font-weight:700;font-size:.85rem;padding:.6rem;border:0;border-radius:10px;background:var(--s-brand);color:var(--s-brand-ink);cursor:pointer}\
+.sofia-phone small{font-size:.7rem;color:var(--s-ink2)}\
 .sofia-fine{margin:0;padding:0 1rem .55rem;font-size:.68rem;color:var(--s-ink2);background:var(--s-bg);text-align:center}\
 .sofia-fine a{color:inherit;text-decoration:underline}\
 .sofia :focus-visible{outline:2px solid var(--s-live);outline-offset:2px}\
@@ -116,6 +129,7 @@
         '<button class="sofia-ib sofia-x" type="button" aria-label="Cerrar chat">' + ICON.close + '</button>' +
       '</header>' +
       '<div class="sofia-log" aria-live="polite"></div>' +
+      '<div class="sofia-handoff"><span>¿Prefieres seguir por WhatsApp? Te pasamos la conversación.</span><a target="_blank" rel="noopener" data-cta="sofia">' + ICON.wa + 'Seguir por WhatsApp</a></div>' +
       '<form class="sofia-form"><textarea rows="1" maxlength="1000" placeholder="Escribe tu mensaje…" aria-label="Escribe tu mensaje"></textarea>' +
         '<button class="sofia-send" type="submit" aria-label="Enviar">' + ICON.send + '</button></form>' +
       '<p class="sofia-fine">Sofía es una asistente con inteligencia artificial. No damos asesoría legal. <a href="/privacidad.html#privacidad">Privacidad</a></p>' +
@@ -130,6 +144,47 @@
   var form = root.querySelector('.sofia-form');
   var input = form.querySelector('textarea');
   var sendBtn = form.querySelector('.sofia-send');
+  var handoff = root.querySelector('.sofia-handoff');
+  var headWa = root.querySelector('.sofia-head a.sofia-ib');
+
+  // "Seguir por WhatsApp": abre el chat con lo que la persona ya preguntó, para no empezar de cero.
+  function waText() {
+    var mine = state.msgs.filter(function (m) { return m.k === 'me'; }).map(function (m) { return m.t; });
+    var asks = mine.filter(function (t) { return !/^(mi whatsapp|mi n[uú]mero)/i.test(t); }).slice(0, 2).join(' / ');
+    if (asks.length > 300) asks = asks.slice(0, 297) + '…';
+    return 'Hola, vengo del chat con Sofía en la página web.' + (asks ? '\n\nMi consulta: ' + asks : '');
+  }
+  function refreshHandoff() {
+    var url = 'https://wa.me/17862016327?text=' + encodeURIComponent(waText());
+    handoff.querySelector('a').href = url; headWa.href = url;
+    var n = state.msgs.filter(function (m) { return m.k === 'me'; }).length;
+    handoff.classList.toggle('on', n >= 1 && !state.phoneGiven);
+  }
+  handoff.querySelector('a').addEventListener('click', function () { track('sofia_whatsapp', { desde: 'barra' }); });
+
+  // Cajita para dejar el WhatsApp cuando Sofía lo pide (con el código de país ya puesto).
+  var CODES = [['1', 'EE. UU. +1'], ['52', 'México +52'], ['503', 'El Salvador +503'], ['502', 'Guatemala +502'], ['504', 'Honduras +504'], ['505', 'Nicaragua +505'], ['58', 'Venezuela +58'], ['57', 'Colombia +57'], ['51', 'Perú +51'], ['593', 'Ecuador +593'], ['53', 'Cuba +53'], ['1809', 'R. Dominicana +1'], ['591', 'Bolivia +591'], ['54', 'Argentina +54'], ['56', 'Chile +56']];
+  function asksPhone(reply) { return /whats ?app/i.test(reply) && /(n[uú]mero|celular|tel[eé]fono)/i.test(reply) && /\?\s*$/.test(reply.trim()); }
+  function phoneBox() {
+    if (log.querySelector('.sofia-phone') || state.phoneGiven) return;
+    var box = document.createElement('form');
+    box.className = 'sofia-phone';
+    box.innerHTML = '<label for="sofia-tel">Tu número de WhatsApp</label><div class="sofia-phone-row"><select aria-label="Código de país">' +
+      CODES.map(function (c) { return '<option value="' + c[0] + '">' + c[1] + '</option>'; }).join('') +
+      '</select><input id="sofia-tel" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="555 123 4567" required></div>' +
+      '<button type="submit">Enviar mi número</button><small>Solo lo usamos para escribirte sobre tu consulta.</small>';
+    box.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var code = box.querySelector('select').value, num = box.querySelector('input').value.replace(/[^0-9]/g, '');
+      if (num.length < 7) { box.querySelector('input').focus(); return; }
+      if (code === '1809') code = '1';
+      state.phoneGiven = true; save(); box.remove(); refreshHandoff();
+      track('sofia_numero');
+      send('Mi WhatsApp es +' + code + ' ' + num);
+    });
+    log.appendChild(box); scroll();
+    setTimeout(function () { var i = box.querySelector('input'); if (i && window.matchMedia('(min-width:561px)').matches) i.focus(); }, 80);
+  }
 
   // El botón va justo encima del botón de WhatsApp, centrado con él y del mismo tamaño;
   // en el celular, encima de la barra inferior.
@@ -223,6 +278,8 @@
         typing(false);
         if (d.chatId) { state.chatId = d.chatId; save(); }
         push('bot', d.reply || d.error || 'No pude responder ahora. Escríbenos por WhatsApp y el equipo te atiende.');
+        refreshHandoff();
+        if (d.askPhone || (d.reply && asksPhone(d.reply))) phoneBox();
         if (d.showCalendar && !state.booked) calendar();
         if (d.leadCreated) { track('generate_lead', { method: 'sofia' }); if (window.adsConversion) window.adsConversion('formulario'); }
       })
@@ -238,6 +295,7 @@
     bubble('bot', GREETING);
     state.msgs.forEach(function (m) { bubble(m.k, m.t); });
     if (!state.msgs.length) chips();
+    refreshHandoff();
   }
 
   var lastFocus = null;
